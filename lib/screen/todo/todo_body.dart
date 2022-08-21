@@ -11,25 +11,21 @@ class TodoBody extends StatelessWidget {
       itemBuilder: (context, index) {
         return Dismissible(
           key: Key(listItem[index].toString()),
-          child: ListTile(
-            leading: Checkbox(
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(10.0),
-                ),
-              ),
-              value: false,
-              onChanged: (value) {},
-            ),
-            title: Text("${listItem[index]}"),
-            subtitle: Text("subtitle"),
-            onTap: () {},
-            horizontalTitleGap: 0,
-            contentPadding: EdgeInsets.symmetric(horizontal: 4.0),
-          ),
           background: Container(color: Colors.blue),
           secondaryBackground: Container(color: Colors.red),
           onDismissed: (direction) {},
+          child: ListTile(
+            leading: Checkbox(
+              value: false,
+              onChanged: (value) {},
+              activeColor: Colors.transparent,
+            ),
+            title: Text("${listItem[index]}"),
+            subtitle: const Text("subtitle"),
+            onTap: () {},
+            horizontalTitleGap: 0,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+          ),
         );
       },
       separatorBuilder: (context, index) {
