@@ -1,18 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todolist/providers/navigation_provider.dart';
+import 'package:todolist/screen/settings/settings_app_bar.dart';
+import 'package:todolist/screen/settings/settings_body.dart';
 import 'package:todolist/screen/todo/todo_app_bar.dart';
 import 'package:todolist/screen/todo/todo_body.dart';
 
 class Home extends ConsumerWidget {
   const Home({Key? key}) : super(key: key);
 
+  static const appBar = <PreferredSizeWidget> [
+    TodoAppBar(),
+    TodoAppBar(),
+    TodoAppBar(),
+    SettingsAppBar()
+  ];
+
+  static const body = [
+    TodoBody(),
+    TodoBody(),
+    TodoBody(),
+    SettingsBody(),
+  ];
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final navigationIndex = ref.watch(navigationProvider);
     return Scaffold(
-      appBar: const TodoAppBar(),
-      body: const TodoBody(),
+      appBar: appBar[navigationIndex],
+      body: body[navigationIndex],
       bottomNavigationBar: NavigationBar(
         selectedIndex: navigationIndex,
         onDestinationSelected: (int index) {
