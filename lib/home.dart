@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:todolist/navigation_provider.dart';
+import 'package:todolist/providers/navigation_provider.dart';
 
 class Home extends ConsumerWidget {
   const Home({Key? key}) : super(key: key);
