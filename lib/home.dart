@@ -9,18 +9,11 @@ import 'package:todolist/screen/todo/todo_body.dart';
 class Home extends ConsumerWidget {
   const Home({Key? key}) : super(key: key);
 
-  static const appBar = <PreferredSizeWidget> [
+  static const appBar = <PreferredSizeWidget>[
     TodoAppBar(),
     TodoAppBar(),
     TodoAppBar(),
     SettingsAppBar()
-  ];
-
-  static const body = [
-    TodoBody(),
-    TodoBody(),
-    TodoBody(),
-    SettingsBody(),
   ];
 
   @override
@@ -28,7 +21,31 @@ class Home extends ConsumerWidget {
     final navigationIndex = ref.watch(navigationProvider);
     return Scaffold(
       appBar: appBar[navigationIndex],
-      body: body[navigationIndex],
+      body: Navigator(
+        pages: [
+          if (navigationIndex == 0)
+            const MaterialPage(
+              key: ValueKey("0"),
+              child: TodoBody(),
+            ),
+          if (navigationIndex == 1)
+            const MaterialPage(
+              key: ValueKey("1"),
+              child: TodoBody(),
+            ),
+          if (navigationIndex == 2)
+            const MaterialPage(
+              key: ValueKey("2"),
+              child: TodoBody(),
+            ),
+          if (navigationIndex == 3)
+            const MaterialPage(
+              key: ValueKey("3"),
+              child: SettingsBody(),
+            ),
+        ],
+        onPopPage: (route, result) => route.didPop(result),
+      ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: navigationIndex,
         onDestinationSelected: (int index) {

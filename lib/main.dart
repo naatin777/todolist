@@ -44,6 +44,16 @@ class _MyAppState extends ConsumerState<MyApp> {
             ),
           ),
         ),
+        pageTransitionsTheme: const PageTransitionsTheme(
+          builders: <TargetPlatform, PageTransitionsBuilder>{
+            TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+            TargetPlatform.iOS: FadeUpwardsPageTransitionsBuilder(),
+            TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
+            TargetPlatform.macOS: FadeUpwardsPageTransitionsBuilder(),
+            TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
+            TargetPlatform.fuchsia: FadeUpwardsPageTransitionsBuilder(),
+          },
+        ),
       ),
       darkTheme: ThemeData(
         useMaterial3: true,
@@ -55,6 +65,16 @@ class _MyAppState extends ConsumerState<MyApp> {
               Radius.circular(10.0),
             ),
           ),
+        ),
+        pageTransitionsTheme: const PageTransitionsTheme(
+          builders: <TargetPlatform, PageTransitionsBuilder>{
+            TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),
+            TargetPlatform.iOS: FadeUpwardsPageTransitionsBuilder(),
+            TargetPlatform.windows: FadeUpwardsPageTransitionsBuilder(),
+            TargetPlatform.macOS: FadeUpwardsPageTransitionsBuilder(),
+            TargetPlatform.linux: FadeUpwardsPageTransitionsBuilder(),
+            TargetPlatform.fuchsia: FadeUpwardsPageTransitionsBuilder(),
+          },
         ),
       ),
       home: const Home(),
