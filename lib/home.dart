@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todolist/providers/navigation_provider.dart';
+import 'package:todolist/screen/search/search_app_bar.dart';
+import 'package:todolist/screen/search/search_body.dart';
 import 'package:todolist/screen/settings/settings_app_bar.dart';
 import 'package:todolist/screen/settings/settings_body.dart';
 import 'package:todolist/screen/todo/todo_app_bar.dart';
@@ -11,7 +13,7 @@ class Home extends ConsumerWidget {
 
   static const appBar = <PreferredSizeWidget>[
     TodoAppBar(),
-    TodoAppBar(),
+    SearchAppBar(),
     TodoAppBar(),
     SettingsAppBar()
   ];
@@ -31,7 +33,7 @@ class Home extends ConsumerWidget {
           if (navigationIndex == 1)
             const MaterialPage(
               key: ValueKey("1"),
-              child: TodoBody(),
+              child: SearchBody(),
             ),
           if (navigationIndex == 2)
             const MaterialPage(
