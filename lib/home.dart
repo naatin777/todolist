@@ -13,71 +13,91 @@ import 'package:todolist/screen/todo/todo_body.dart';
 class Home extends ConsumerWidget {
   const Home({Key? key}) : super(key: key);
 
-  static const appBar = <PreferredSizeWidget>[
-    TodoAppBar(),
-    SearchAppBar(),
-    AnalyticsAppBar(),
-    SettingsAppBar()
-  ];
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final navigationIndex = ref.watch(navigationProvider);
     return Scaffold(
-      appBar: appBar[navigationIndex],
+      appBar: navigationIndex.appBar,
       body: Navigator(
-        pages: [
-          if (navigationIndex == 0)
-            const MaterialPage(
-              key: ValueKey("0"),
-              child: TodoBody(),
-            ),
-          if (navigationIndex == 1)
-            const MaterialPage(
-              key: ValueKey("1"),
-              child: SearchBody(),
-            ),
-          if (navigationIndex == 2)
-            const MaterialPage(
-              key: ValueKey("2"),
-              child: AnalyticsBody(),
-            ),
-          if (navigationIndex == 3)
-            const MaterialPage(
-              key: ValueKey("3"),
-              child: SettingsBody(),
-            ),
-        ],
+        pages: [navigationIndex.page],
         onPopPage: (route, result) => route.didPop(result),
       ),
       bottomNavigationBar: NavigationBar(
-        selectedIndex: navigationIndex,
+        selectedIndex: navigationIndex.index,
         onDestinationSelected: (int index) {
           ref.read(navigationProvider.notifier).changeIndex(index);
         },
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.check),
-            selectedIcon: Icon(Icons.check_outlined),
-            label: "todo",
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.search),
-            selectedIcon: Icon(Icons.search_outlined),
-            label: "search",
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.analytics),
-            selectedIcon: Icon(Icons.analytics_outlined),
-            label: "analytics",
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.settings),
-            selectedIcon: Icon(Icons.settings_outlined),
-            label: "settings",
-          ),
-        ],
+        destinations: NavigationItem.values.map((e) => e.destination).toList(),
       ),
     );
+  }
+}
+
+extension on NavigationItem {
+  NavigationDestination get destination {
+    switch (this) {
+      case NavigationItem.todo:
+        return const NavigationDestination(
+          icon: Icon(Icons.check),
+          selectedIcon: Icon(Icons.check_outlined),
+          label: "todo",
+        );
+      case NavigationItem.search:
+        return const NavigationDestination(
+          icon: Icon(Icons.search),
+          selectedIcon: Icon(Icons.search_outlined),
+          label: "search",
+        );
+      case NavigationItem.analytics:
+        return const NavigationDestination(
+          icon: Icon(Icons.analytics),
+          selectedIcon: Icon(Icons.analytics_outlined),
+          label: "analytics",
+        );
+      case NavigationItem.settings:
+        return const NavigationDestination(
+          icon: Icon(Icons.settings),
+          selectedIcon: Icon(Icons.settings_outlined),
+          label: "settings",
+        );
+    }
+  }
+
+  PreferredSizeWidget get appBar {
+    switch (this) {
+      case NavigationItem.todo:
+        return const TodoAppBar();
+      case NavigationItem.search:
+        return const SearchAppBar();
+      case NavigationItem.analytics:
+        return const AnalyticsAppBar();
+      case NavigationItem.settings:
+        return const SettingsAppBar();
+    }
+  }
+
+  MaterialPage get page {
+    switch (this) {
+      case NavigationItem.todo:
+        return const MaterialPage(
+          key: ValueKey("0"),
+          child: TodoBody(),
+        );
+      case NavigationItem.search:
+        return const MaterialPage(
+          key: ValueKey("1"),
+          child: SearchBody(),
+        );
+      case NavigationItem.analytics:
+        return const MaterialPage(
+          key: ValueKey("2"),
+          child: AnalyticsBody(),
+        );
+      case NavigationItem.settings:
+        return const MaterialPage(
+          key: ValueKey("3"),
+          child: SettingsBody(),
+        );
+    }
   }
 }

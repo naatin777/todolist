@@ -1,14 +1,21 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class NavigationProvider extends StateNotifier<int> {
-  NavigationProvider() : super(0);
+class NavigationProvider extends StateNotifier<NavigationItem> {
+  NavigationProvider() : super(NavigationItem.todo);
 
   changeIndex(int value) {
-    state = value;
+    state = NavigationItem.values[value];
   }
 }
 
 final navigationProvider =
-    StateNotifierProvider<NavigationProvider, int>((ref) {
+    StateNotifierProvider<NavigationProvider, NavigationItem>((ref) {
   return NavigationProvider();
 });
+
+enum NavigationItem {
+  todo,
+  search,
+  analytics,
+  settings,
+}

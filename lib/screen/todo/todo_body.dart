@@ -9,9 +9,7 @@ class TodoBody extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final listItem = List.generate(50, (index) => index);
     final navigationIndex = ref.watch(navigationProvider);
-    if (navigationIndex == 3) {
-      return Container();
-    } else {
+    if (navigationIndex == NavigationItem.todo) {
       return ListView.separated(
         itemCount: listItem.length,
         itemBuilder: (context, index) {
@@ -38,6 +36,8 @@ class TodoBody extends ConsumerWidget {
           return Container();
         },
       );
+    } else {
+      return Container();
     }
   }
 }

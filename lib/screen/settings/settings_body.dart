@@ -10,9 +10,7 @@ class SettingsBody extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ref.watch(themeProvider);
     final navigationIndex = ref.watch(navigationProvider);
-    if (navigationIndex != 3) {
-      return Container();
-    } else {
+    if (navigationIndex == NavigationItem.settings) {
       return SingleChildScrollView(
         child: Column(
           children: [
@@ -34,6 +32,8 @@ class SettingsBody extends ConsumerWidget {
           ],
         ),
       );
+    } else {
+      return Container();
     }
   }
 }
