@@ -9,6 +9,7 @@ class TodoAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      centerTitle: true,
       title: const Text("Todo"),
     );
   }
