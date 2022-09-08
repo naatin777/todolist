@@ -44,25 +44,25 @@ extension on NavigationItem {
         return const NavigationDestination(
           icon: Icon(Icons.check),
           selectedIcon: Icon(Icons.check_outlined),
-          label: "todo",
+          label: "Todo",
         );
       case NavigationItem.search:
         return const NavigationDestination(
           icon: Icon(Icons.search),
           selectedIcon: Icon(Icons.search_outlined),
-          label: "search",
+          label: "Search",
         );
       case NavigationItem.analytics:
         return const NavigationDestination(
           icon: Icon(Icons.analytics),
           selectedIcon: Icon(Icons.analytics_outlined),
-          label: "analytics",
+          label: "Analytics",
         );
       case NavigationItem.settings:
         return const NavigationDestination(
           icon: Icon(Icons.settings),
           selectedIcon: Icon(Icons.settings_outlined),
-          label: "settings",
+          label: "Settings",
         );
     }
   }
