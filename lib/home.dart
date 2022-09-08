@@ -9,6 +9,7 @@ import 'package:todolist/screen/settings/settings_app_bar.dart';
 import 'package:todolist/screen/settings/settings_body.dart';
 import 'package:todolist/screen/todo/todo_app_bar.dart';
 import 'package:todolist/screen/todo/todo_body.dart';
+import 'package:todolist/screen/todo/todo_button.dart';
 import 'package:todolist/screen/todo/todo_drawer.dart';
 
 class Home extends ConsumerWidget {
@@ -24,6 +25,7 @@ class Home extends ConsumerWidget {
         pages: [navigationIndex.page],
         onPopPage: (route, result) => route.didPop(result),
       ),
+      floatingActionButton: navigationIndex.floatingActionButton,
       bottomNavigationBar: NavigationBar(
         selectedIndex: navigationIndex.index,
         onDestinationSelected: (int index) {
@@ -104,11 +106,21 @@ extension on NavigationItem {
   }
 
   Widget? get drawer {
-    switch(this) {
+    switch (this) {
       case NavigationItem.todo:
         return const TodoDrawer();
       default:
         return null;
+    }
+  }
+
+  Widget? get floatingActionButton {
+    switch (this) {
+      case NavigationItem.todo:
+        return const TodoButton();
+      default:
+        return
+          null;
     }
   }
 }
