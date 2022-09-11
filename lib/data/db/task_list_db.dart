@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:drift/drift.dart';
-import 'package:todolist/data/db/db.dart';
+import 'package:drift/native.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 
 part 'task_list_db.g.dart';
 
@@ -11,7 +15,7 @@ class TaskLists extends Table {
 
 @DriftDatabase(tables: [TaskLists])
 class TaskListDatabase extends _$TaskListDatabase {
-  TaskListDatabase() : super(openConnection());
+  TaskListDatabase() : super(_openConnection());
 
   @override
   int get schemaVersion => 1;
@@ -32,4 +36,12 @@ class TaskListDatabase extends _$TaskListDatabase {
   Future<void> deleteTaskList(TaskList taskList) {
     return (delete(taskLists)..where((tbl) => tbl.id.equals(taskList.id))).go();
   }
+}
+
+LazyDatabase _openConnection() {
+  return LazyDatabase(() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final file = File(join(directory.path, 'task_list.sqlite'));
+    return NativeDatabase(file);
+  });
 }
