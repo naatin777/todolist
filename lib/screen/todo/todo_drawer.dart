@@ -1,10 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:todolist/providers/task_list_provider.dart';
 
-class TodoDrawer extends StatelessWidget {
-  const TodoDrawer({Key? key}) : super(key: key);
+class TodoDrawer extends ConsumerWidget {
+  TodoDrawer({Key? key}) : super(key: key);
+  final titleController = TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final taskList = ref.watch(taskListProvider);
+    final taskListTile = (taskList.value ?? []).map(
+      (e) => ListTile(
+        leading: const Icon(Icons.list),
+        title: Text(e.title),
+        onTap: () {},
+      ),
+    );
     return Drawer(
       child: SafeArea(
         child: ListView(
@@ -15,6 +26,8 @@ class TodoDrawer extends StatelessWidget {
               onTap: () {},
             ),
             const Divider(),
+            for (ListTile tile in taskListTile) tile,
+            if (taskListTile.isNotEmpty) const Divider(),
             ListTile(
               leading: const Icon(Icons.add),
               title: const Text("Add new list"),
@@ -23,12 +36,13 @@ class TodoDrawer extends StatelessWidget {
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      title: Text("Add new list"),
+                      title: const Text("Add new list"),
                       content: TextField(
+                        controller: titleController,
                         autofocus: true,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           border: OutlineInputBorder(),
-                          labelText: 'List name',
+                          labelText: 'List title',
                         ),
                       ),
                       actionsAlignment: MainAxisAlignment.end,
@@ -37,11 +51,17 @@ class TodoDrawer extends StatelessWidget {
                           onPressed: () {
                             Navigator.of(context).pop();
                           },
-                          child: Text("Cancel"),
+                          child: const Text("Cancel"),
                         ),
                         TextButton(
-                          onPressed: () {},
-                          child: Text("Ok"),
+                          onPressed: () {
+                            ref
+                                .read(taskListDatabaseProvider)
+                                .insertTaskList(titleController.text);
+                            titleController.clear();
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text("Ok"),
                         ),
                       ],
                     );

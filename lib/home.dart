@@ -108,7 +108,7 @@ extension on NavigationItem {
   Widget? get drawer {
     switch (this) {
       case NavigationItem.todo:
-        return const TodoDrawer();
+        return TodoDrawer();
       default:
         return null;
     }
