@@ -6,6 +6,8 @@ part 'task_db.g.dart';
 class Tasks extends Table {
   IntColumn get id => integer().autoIncrement()();
 
+  IntColumn get list => integer()();
+
   TextColumn get title => text()();
 
   BoolColumn get check => boolean()();
@@ -22,18 +24,20 @@ class TaskDatabase extends _$TaskDatabase {
     return (select(tasks)).watch();
   }
 
-  Future<int> insertTask(String title, bool check) {
+  Future<int> insertTask(int list, String title, bool check) {
     return into(tasks).insert(
       TasksCompanion(
+        list: Value(list),
         title: Value(title),
         check: Value(check),
       ),
     );
   }
 
-  Future<int> updateTask(Task task, String title, bool check) {
+  Future<int> updateTask(Task task, int list, String title, bool check) {
     return (update(tasks)..where((tbl) => tbl.id.equals(task.id))).write(
       TasksCompanion(
+        list: Value(list),
         title: Value(title),
         check: Value(check),
       ),
