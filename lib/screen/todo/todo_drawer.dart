@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todolist/providers/task_list_provider.dart';
+import 'package:todolist/screen/todo/new_list_dialog.dart';
 
 class TodoDrawer extends ConsumerWidget {
-  TodoDrawer({Key? key}) : super(key: key);
-  final titleController = TextEditingController();
+  const TodoDrawer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -35,36 +35,7 @@ class TodoDrawer extends ConsumerWidget {
                 await showDialog(
                   context: context,
                   builder: (context) {
-                    return AlertDialog(
-                      title: const Text("Add new list"),
-                      content: TextField(
-                        controller: titleController,
-                        autofocus: true,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'List title',
-                        ),
-                      ),
-                      actionsAlignment: MainAxisAlignment.end,
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text("Cancel"),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            ref
-                                .read(taskListDatabaseProvider)
-                                .insertTaskList(titleController.text);
-                            titleController.clear();
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text("Ok"),
-                        ),
-                      ],
-                    );
+                    return const NewListDialog();
                   },
                 );
               },
