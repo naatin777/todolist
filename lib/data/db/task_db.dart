@@ -22,13 +22,22 @@ class TaskDatabase extends _$TaskDatabase {
     return (select(tasks)).watch();
   }
 
-  Future<int> insertTask(String title) {
-    return into(tasks).insert(TasksCompanion(title: Value(title)));
+  Future<int> insertTask(String title, bool check) {
+    return into(tasks).insert(
+      TasksCompanion(
+        title: Value(title),
+        check: Value(check),
+      ),
+    );
   }
 
-  Future<int> updateTask(Task task, String title) {
-    return (update(tasks)..where((tbl) => tbl.id.equals(task.id)))
-        .write(TasksCompanion(title: Value(title)));
+  Future<int> updateTask(Task task, String title, bool check) {
+    return (update(tasks)..where((tbl) => tbl.id.equals(task.id))).write(
+      TasksCompanion(
+        title: Value(title),
+        check: Value(check),
+      ),
+    );
   }
 
   Future<void> deleteTask(Task task) {
