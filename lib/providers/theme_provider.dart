@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:todolist/data/theme_prefs.dart';
+import 'package:todolist/data/prefs/theme_prefs.dart';
 
 class ThemeProvider extends StateNotifier<ThemeMode> {
   ThemeProvider() : super(ThemeMode.system);
