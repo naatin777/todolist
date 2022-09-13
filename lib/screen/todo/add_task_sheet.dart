@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:todolist/constant.dart';
 import 'package:todolist/providers/task_provider.dart';
+import 'package:todolist/providers/todo_navigation_provider.dart';
 
 class AddTaskSheet extends ConsumerStatefulWidget {
   const AddTaskSheet({super.key});
@@ -20,6 +22,7 @@ class _AddTaskSheetState extends ConsumerState<AddTaskSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final taskList = ref.watch(todoNavigationProvider) ?? defaultTaskList;
     return SingleChildScrollView(
       padding: EdgeInsets.only(
         left: 8,
@@ -53,7 +56,7 @@ class _AddTaskSheetState extends ConsumerState<AddTaskSheet> {
                 onPressed: () {
                   ref
                       .read(taskDatabaseProvider)
-                      .insertTask(0, titleController.text, false);
+                      .insertTask(taskList.id, titleController.text, false);
                   titleController.clear();
                 },
                 child: const Text("Save"),
