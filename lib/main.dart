@@ -46,6 +46,7 @@ class _MyAppState extends ConsumerState<MyApp> {
       theme: ThemeData(
         useMaterial3: true,
         brightness: Brightness.light,
+        colorSchemeSeed: Colors.grey,
         checkboxTheme: CheckboxThemeData(
           checkColor: MaterialStateProperty.all(Colors.black),
           shape: const RoundedRectangleBorder(
@@ -68,6 +69,7 @@ class _MyAppState extends ConsumerState<MyApp> {
       darkTheme: ThemeData(
         useMaterial3: true,
         brightness: Brightness.dark,
+        colorSchemeSeed: Colors.grey,
         checkboxTheme: CheckboxThemeData(
           checkColor: MaterialStateProperty.all(Colors.white),
           shape: const RoundedRectangleBorder(
