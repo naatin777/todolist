@@ -84,22 +84,22 @@ extension on NavigationItem {
     switch (this) {
       case NavigationItem.todo:
         return const MaterialPage(
-          key: ValueKey("0"),
+          key: ValueKey(NavigationItem.todo),
           child: TodoBody(),
         );
       case NavigationItem.search:
         return const MaterialPage(
-          key: ValueKey("1"),
+          key: ValueKey(NavigationItem.search),
           child: SearchBody(),
         );
       case NavigationItem.analytics:
         return const MaterialPage(
-          key: ValueKey("2"),
+          key: ValueKey(NavigationItem.analytics),
           child: AnalyticsBody(),
         );
       case NavigationItem.settings:
         return const MaterialPage(
-          key: ValueKey("3"),
+          key: ValueKey(NavigationItem.settings),
           child: SettingsBody(),
         );
     }
@@ -119,8 +119,7 @@ extension on NavigationItem {
       case NavigationItem.todo:
         return const TodoButton();
       default:
-        return
-          null;
+        return null;
     }
   }
 }
