@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:todolist/data/db/task_list_db.dart';
+import 'package:todolist/data/db/app_database.dart';
 
 class TodoNavigationProvider extends StateNotifier<TaskList?> {
   TodoNavigationProvider() : super(null);
