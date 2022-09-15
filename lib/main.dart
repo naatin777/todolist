@@ -5,13 +5,23 @@ import 'package:todolist/components/common/single_touch_container.dart';
 import 'package:todolist/pages/home.dart';
 import 'package:todolist/providers/theme_provider.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(systemNavigationBarColor: Colors.transparent),
   );
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-  runApp(const ProviderScope(child: SingleTouchContainer(child: MyApp())));
+  final themeMode = await ThemeProvider.initialize();
+  runApp(
+    ProviderScope(
+      overrides: [
+        themeProvider.overrideWithProvider(themeProviderFamily(themeMode))
+      ],
+      child: const SingleTouchContainer(
+        child: MyApp(),
+      ),
+    ),
+  );
 }
 
 class MyApp extends ConsumerStatefulWidget {
@@ -25,7 +35,6 @@ class _MyAppState extends ConsumerState<MyApp> {
   @override
   void initState() {
     super.initState();
-    ref.read(themeProvider.notifier).setupTheme();
   }
 
   @override

@@ -3,20 +3,26 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todolist/data/prefs/theme_prefs.dart';
 
 class ThemeProvider extends StateNotifier<ThemeMode> {
-  ThemeProvider() : super(ThemeMode.system);
+  ThemeProvider(ThemeMode themeMode) : super(themeMode);
 
-  setupTheme() async {
+  static Future<ThemeMode> initialize() async {
     final themePrefs = ThemePrefs();
-    state = await themePrefs.loadTheme();
+    return themePrefs.loadTheme();
   }
 
-  changeTheme(ThemeMode value) async {
+  Future<void> changeTheme(ThemeMode value) async {
     final themePrefs = ThemePrefs();
     await themePrefs.saveTheme(value);
     state = value;
   }
 }
 
+final themeProviderFamily =
+    StateNotifierProvider.family<ThemeProvider, ThemeMode, ThemeMode>(
+        (ref, arg) {
+  return ThemeProvider(arg);
+});
+
 final themeProvider = StateNotifierProvider<ThemeProvider, ThemeMode>((ref) {
-  return ThemeProvider();
+  return throw UnimplementedError();
 });
