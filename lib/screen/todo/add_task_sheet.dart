@@ -23,64 +23,82 @@ class _AddTaskSheetState extends ConsumerState<AddTaskSheet> {
   @override
   Widget build(BuildContext context) {
     final taskList = ref.watch(todoNavigationProvider) ?? inbox;
-    return SingleChildScrollView(
-      padding: EdgeInsets.only(
-        left: 8,
-        top: 8,
-        right: 8,
-        bottom: MediaQuery.of(context).viewInsets.bottom,
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        maxHeight:
+            MediaQuery.of(context).size.height - AppBar().preferredSize.height,
       ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              IconButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                icon: const Icon(Icons.arrow_back),
-              ),
-              Expanded(
-                child: TextField(
-                  controller: titleController,
-                  autofocus: true,
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    hintText: "Title",
-                  ),
-                  style: const TextStyle(fontSize: 20),
+      child: SingleChildScrollView(
+        padding: EdgeInsets.only(
+          left: 8,
+          top: 8,
+          right: 8,
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  icon: const Icon(Icons.arrow_back),
                 ),
+                Expanded(
+                  child: TextField(
+                    controller: titleController,
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      hintText: "Title",
+                    ),
+                    style: const TextStyle(fontSize: 20),
+                    autofocus: true,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    ref
+                        .read(taskDatabaseProvider)
+                        .insertTask(taskList.id, titleController.text, false);
+                    titleController.clear();
+                  },
+                  icon: const Icon(Icons.send),
+                )
+              ],
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                top: 4.0,
+                bottom: MediaQuery.of(context).padding.bottom + 4.0,
               ),
-              TextButton(
-                onPressed: () {
-                  ref
-                      .read(taskDatabaseProvider)
-                      .insertTask(taskList.id, titleController.text, false);
-                  titleController.clear();
-                },
-                child: const Text("Save"),
-              )
-            ],
-          ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.calendar_month),
-            title: const Text("Deadline"),
-            onTap: () {},
-          ),
-          ListTile(
-            leading: const Icon(Icons.repeat),
-            title: const Text("Repeat"),
-            onTap: () {},
-          ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.check_box),
-            title: const Text("Subtasks"),
-            onTap: () {},
-          ),
-        ],
+              child: Row(
+                children: [
+                  IconButton(
+                    tooltip: "importance",
+                    onPressed: () {},
+                    icon: const Icon(Icons.star),
+                  ),
+                  IconButton(
+                    tooltip: "memo",
+                    onPressed: () {},
+                    icon: const Icon(Icons.article),
+                  ),
+                  IconButton(
+                    tooltip: "deadline",
+                    onPressed: () {},
+                    icon: const Icon(Icons.calendar_month),
+                  ),
+                  IconButton(
+                    tooltip: "subtask",
+                    onPressed: () {},
+                    icon: const Icon(Icons.add_task),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

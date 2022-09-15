@@ -6,9 +6,9 @@ class TodoButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
-    final preferredSize = AppBar().preferredSize;
     return FloatingActionButton(
+      tooltip: "Add new task",
+      child: const Icon(Icons.add),
       onPressed: () async {
         await showModalBottomSheet(
           isScrollControlled: true,
@@ -17,17 +17,12 @@ class TodoButton extends StatelessWidget {
               top: Radius.circular(8),
             ),
           ),
-          constraints: BoxConstraints(
-            maxHeight: mediaQuery.size.height - preferredSize.height,
-            minHeight: mediaQuery.size.height - preferredSize.height,
-          ),
           context: context,
           builder: (context) {
             return const AddTaskSheet();
           },
         );
       },
-      child: const Icon(Icons.add),
     );
   }
 }
