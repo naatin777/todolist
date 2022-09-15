@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:todolist/constant.dart';
 import 'package:todolist/providers/task_list_provider.dart';
 import 'package:todolist/providers/todo_navigation_provider.dart';
 import 'package:todolist/screen/todo/new_list_dialog.dart';
@@ -11,15 +10,18 @@ class TodoDrawer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final taskList = ref.watch(taskListProvider);
-    final taskListTile = (taskList.value ?? []).map(
-      (e) => ListTile(
-        leading: const Icon(Icons.list),
-        title: Text(e.title),
-        onTap: () {
-          ref.read(todoNavigationProvider.notifier).changeTaskList(e);
-        },
-      ),
-    );
+    final inbox =
+        (taskList.value?.where((element) => element.id == 1) ?? []).first;
+    final taskListTile =
+        (taskList.value ?? []).where((element) => element.id != 1).map(
+              (e) => ListTile(
+                leading: const Icon(Icons.list),
+                title: Text(e.title),
+                onTap: () {
+                  ref.read(todoNavigationProvider.notifier).changeTaskList(e);
+                },
+              ),
+            );
     return Drawer(
       child: SafeArea(
         child: ListView(
@@ -31,11 +33,9 @@ class TodoDrawer extends ConsumerWidget {
             ),
             ListTile(
               leading: const Icon(Icons.inbox),
-              title: const Text("Default"),
+              title: Text(inbox.title),
               onTap: () {
-                ref
-                    .read(todoNavigationProvider.notifier)
-                    .changeTaskList(defaultTaskList);
+                ref.read(todoNavigationProvider.notifier).changeTaskList(inbox);
               },
             ),
             const Divider(),

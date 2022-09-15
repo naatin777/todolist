@@ -20,6 +20,18 @@ class TaskListDatabase extends _$TaskListDatabase {
   @override
   int get schemaVersion => 1;
 
+  @override
+  MigrationStrategy get migration {
+    return MigrationStrategy(
+      onCreate: (Migrator m) async {
+        await m.createAll();
+        await into(taskLists).insert(
+          const TaskListsCompanion(title: Value("Inbox")),
+        );
+      },
+    );
+  }
+
   Stream<List<TaskList>> watchTaskList() {
     return (select(taskLists)).watch();
   }
