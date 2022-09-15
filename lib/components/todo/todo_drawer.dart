@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todolist/constant.dart';
 import 'package:todolist/providers/task_list_provider.dart';
 import 'package:todolist/providers/todo_navigation_provider.dart';
-import 'package:todolist/screen/todo/new_list_dialog.dart';
+import 'package:todolist/components/todo/new_list_dialog.dart';
 
 class TodoDrawer extends ConsumerWidget {
   const TodoDrawer({Key? key}) : super(key: key);

@@ -4,7 +4,7 @@ import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:todolist/constant.dart';
+import 'package:todolist/util.dart';
 
 part 'task_list_db.g.dart';
 

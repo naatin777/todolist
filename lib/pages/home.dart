@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todolist/providers/navigation_provider.dart';
-import 'package:todolist/screen/analytics/analytics_app_bar.dart';
-import 'package:todolist/screen/analytics/analytics_body.dart';
-import 'package:todolist/screen/search/search_app_bar.dart';
-import 'package:todolist/screen/search/search_body.dart';
-import 'package:todolist/screen/settings/settings_app_bar.dart';
-import 'package:todolist/screen/settings/settings_body.dart';
-import 'package:todolist/screen/todo/todo_app_bar.dart';
-import 'package:todolist/screen/todo/todo_body.dart';
-import 'package:todolist/screen/todo/todo_button.dart';
-import 'package:todolist/screen/todo/todo_drawer.dart';
+import 'package:todolist/components/analytics/analytics_app_bar.dart';
+import 'package:todolist/components/analytics/analytics_body.dart';
+import 'package:todolist/components/search/search_app_bar.dart';
+import 'package:todolist/components/search/search_body.dart';
+import 'package:todolist/components/settings/settings_app_bar.dart';
+import 'package:todolist/components/settings/settings_body.dart';
+import 'package:todolist/components/todo/todo_app_bar.dart';
+import 'package:todolist/components/todo/todo_body.dart';
+import 'package:todolist/components/todo/todo_button.dart';
+import 'package:todolist/components/todo/todo_drawer.dart';
 
 class Home extends ConsumerWidget {
   const Home({Key? key}) : super(key: key);
