@@ -7,7 +7,7 @@ class TodoNavigationProvider extends StateNotifier<TaskList> {
 
   static Future<TaskList> initialize() async {
     final todoNavigationPrefs = TodoNavigationPrefs();
-    final appDatabase = AppDatabase();
+    final appDatabase = AppDatabase.appDatabase;
     final todoNavigation = await todoNavigationPrefs.loadTodoNavigation();
     return appDatabase.taskListsDao.selectFromId(todoNavigation);
   }

@@ -8,41 +8,45 @@ class TodoBody extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final listItem = ref.watch(taskProvider).value ?? [];
+    final listItem = ref.watch(taskProvider);
     final homeNavigation = ref.watch(homeNavigationProvider);
     if (homeNavigation == NavigationItem.todo) {
-      return ListView.separated(
-        itemCount: listItem.length,
-        itemBuilder: (context, index) {
-          return Dismissible(
-            key: Key(listItem[index].toString()),
-            background: Container(color: Colors.blue),
-            secondaryBackground: Container(color: Colors.red),
-            onDismissed: (direction) {},
-            child: ListTile(
-              leading: Checkbox(
-                value: listItem[index].check,
-                onChanged: (value) {
-                  ref.read(taskDatabaseProvider).updateTask(
-                        listItem[index],
-                        listItem[index].list,
-                        listItem[index].title,
-                        value ?? listItem[index].check,
-                      );
-                },
-                activeColor: Colors.transparent,
+      return listItem.when(
+        data: (data) => ListView.separated(
+          itemCount: data.length,
+          itemBuilder: (context, index) {
+            return Dismissible(
+              key: Key(data[index].toString()),
+              background: Container(color: Colors.blue),
+              secondaryBackground: Container(color: Colors.red),
+              onDismissed: (direction) {},
+              child: ListTile(
+                leading: Checkbox(
+                  value: data[index].check,
+                  onChanged: (value) {
+                    ref.read(taskDatabaseProvider).updateTask(
+                          data[index],
+                          data[index].list,
+                          data[index].title,
+                          value ?? data[index].check,
+                        );
+                  },
+                  activeColor: Colors.transparent,
+                ),
+                title: Text(data[index].title),
+                subtitle: const Text("subtitle"),
+                onTap: () {},
+                horizontalTitleGap: 0,
+                contentPadding: const EdgeInsets.symmetric(horizontal: 4.0),
               ),
-              title: Text(listItem[index].title),
-              subtitle: const Text("subtitle"),
-              onTap: () {},
-              horizontalTitleGap: 0,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-            ),
-          );
-        },
-        separatorBuilder: (context, index) {
-          return Container();
-        },
+            );
+          },
+          separatorBuilder: (context, index) {
+            return Container();
+          },
+        ),
+        error: (error, stackTrace) => Container(),
+        loading: () => const CircularProgressIndicator(),
       );
     } else {
       return Container();
