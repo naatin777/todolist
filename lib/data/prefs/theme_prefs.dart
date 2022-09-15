@@ -4,6 +4,14 @@ import 'package:flutter/material.dart';
 class ThemePrefs {
   static const key = "theme";
 
+  static final ThemePrefs _instance = ThemePrefs._();
+
+  factory ThemePrefs() {
+    return _instance;
+  }
+
+  ThemePrefs._();
+
   Future<ThemeMode> loadTheme() async {
     final prefs = await SharedPreferences.getInstance();
     final theme = prefs.getString(key);

@@ -19,7 +19,11 @@ class AppDatabase extends _$AppDatabase {
   @override
   int get schemaVersion => 1;
 
-  static final appDatabase = AppDatabase();
+  static final _instance = AppDatabase();
+
+  static AppDatabase getInstance() {
+    return _instance;
+  }
 }
 
 LazyDatabase _openConnection() {
