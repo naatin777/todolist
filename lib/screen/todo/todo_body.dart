@@ -22,7 +22,14 @@ class TodoBody extends ConsumerWidget {
             child: ListTile(
               leading: Checkbox(
                 value: listItem[index].check,
-                onChanged: (value) {},
+                onChanged: (value) {
+                  ref.read(taskDatabaseProvider).updateTask(
+                        listItem[index],
+                        listItem[index].list,
+                        listItem[index].title,
+                        value ?? listItem[index].check,
+                      );
+                },
                 activeColor: Colors.transparent,
               ),
               title: Text(listItem[index].title),
