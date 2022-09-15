@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:todolist/providers/navigation_provider.dart';
+import 'package:todolist/providers/home_navigation_provider.dart';
 import 'package:todolist/components/analytics/analytics_app_bar.dart';
 import 'package:todolist/components/analytics/analytics_body.dart';
 import 'package:todolist/components/search/search_app_bar.dart';
@@ -17,19 +17,40 @@ class Home extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final navigationIndex = ref.watch(navigationProvider);
+    final homeNavigation = ref.watch(homeNavigationProvider);
     return Scaffold(
-      appBar: navigationIndex.appBar,
-      drawer: navigationIndex.drawer,
+      appBar: homeNavigation.appBar,
+      drawer: homeNavigation.drawer,
       body: Navigator(
-        pages: [navigationIndex.page],
+        pages: [
+          if (NavigationItem.todo == homeNavigation)
+            const MaterialPage(
+              key: ValueKey(NavigationItem.todo),
+              child: TodoBody(),
+            ),
+          if (NavigationItem.search == homeNavigation)
+            const MaterialPage(
+              key: ValueKey(NavigationItem.search),
+              child: SearchBody(),
+            ),
+          if (NavigationItem.analytics == homeNavigation)
+            const MaterialPage(
+              key: ValueKey(NavigationItem.analytics),
+              child: AnalyticsBody(),
+            ),
+          if (NavigationItem.settings == homeNavigation)
+            const MaterialPage(
+              key: ValueKey(NavigationItem.settings),
+              child: SettingsBody(),
+            ),
+        ],
         onPopPage: (route, result) => route.didPop(result),
       ),
-      floatingActionButton: navigationIndex.floatingActionButton,
+      floatingActionButton: homeNavigation.floatingActionButton,
       bottomNavigationBar: NavigationBar(
-        selectedIndex: navigationIndex.index,
+        selectedIndex: homeNavigation.index,
         onDestinationSelected: (int index) {
-          ref.read(navigationProvider.notifier).changeIndex(index);
+          ref.read(homeNavigationProvider.notifier).changeNavigation(index);
         },
         destinations: NavigationItem.values.map((e) => e.destination).toList(),
       ),
@@ -77,31 +98,6 @@ extension on NavigationItem {
         return const AnalyticsAppBar();
       case NavigationItem.settings:
         return const SettingsAppBar();
-    }
-  }
-
-  MaterialPage get page {
-    switch (this) {
-      case NavigationItem.todo:
-        return const MaterialPage(
-          key: ValueKey(NavigationItem.todo),
-          child: TodoBody(),
-        );
-      case NavigationItem.search:
-        return const MaterialPage(
-          key: ValueKey(NavigationItem.search),
-          child: SearchBody(),
-        );
-      case NavigationItem.analytics:
-        return const MaterialPage(
-          key: ValueKey(NavigationItem.analytics),
-          child: AnalyticsBody(),
-        );
-      case NavigationItem.settings:
-        return const MaterialPage(
-          key: ValueKey(NavigationItem.settings),
-          child: SettingsBody(),
-        );
     }
   }
 
