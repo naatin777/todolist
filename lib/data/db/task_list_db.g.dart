@@ -8,13 +8,13 @@ part of 'task_list_db.dart';
 
 // ignore_for_file: type=lint
 class TaskList extends DataClass implements Insertable<TaskList> {
-  final int id;
+  final String id;
   final String title;
   const TaskList({required this.id, required this.title});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
+    map['id'] = Variable<String>(id);
     map['title'] = Variable<String>(title);
     return map;
   }
@@ -30,7 +30,7 @@ class TaskList extends DataClass implements Insertable<TaskList> {
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return TaskList(
-      id: serializer.fromJson<int>(json['id']),
+      id: serializer.fromJson<String>(json['id']),
       title: serializer.fromJson<String>(json['title']),
     );
   }
@@ -38,12 +38,12 @@ class TaskList extends DataClass implements Insertable<TaskList> {
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
+      'id': serializer.toJson<String>(id),
       'title': serializer.toJson<String>(title),
     };
   }
 
-  TaskList copyWith({int? id, String? title}) => TaskList(
+  TaskList copyWith({String? id, String? title}) => TaskList(
         id: id ?? this.id,
         title: title ?? this.title,
       );
@@ -65,7 +65,7 @@ class TaskList extends DataClass implements Insertable<TaskList> {
 }
 
 class TaskListsCompanion extends UpdateCompanion<TaskList> {
-  final Value<int> id;
+  final Value<String> id;
   final Value<String> title;
   const TaskListsCompanion({
     this.id = const Value.absent(),
@@ -76,7 +76,7 @@ class TaskListsCompanion extends UpdateCompanion<TaskList> {
     required String title,
   }) : title = Value(title);
   static Insertable<TaskList> custom({
-    Expression<int>? id,
+    Expression<String>? id,
     Expression<String>? title,
   }) {
     return RawValuesInsertable({
@@ -85,7 +85,7 @@ class TaskListsCompanion extends UpdateCompanion<TaskList> {
     });
   }
 
-  TaskListsCompanion copyWith({Value<int>? id, Value<String>? title}) {
+  TaskListsCompanion copyWith({Value<String>? id, Value<String>? title}) {
     return TaskListsCompanion(
       id: id ?? this.id,
       title: title ?? this.title,
@@ -96,7 +96,7 @@ class TaskListsCompanion extends UpdateCompanion<TaskList> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     if (id.present) {
-      map['id'] = Variable<int>(id.value);
+      map['id'] = Variable<String>(id.value);
     }
     if (title.present) {
       map['title'] = Variable<String>(title.value);
@@ -122,11 +122,11 @@ class $TaskListsTable extends TaskLists
   $TaskListsTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
   @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
       'id', aliasedName, false,
-      type: DriftSqlType.int,
+      type: DriftSqlType.string,
       requiredDuringInsert: false,
-      defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
+      clientDefault: () => uuid.v4());
   final VerificationMeta _titleMeta = const VerificationMeta('title');
   @override
   late final GeneratedColumn<String> title = GeneratedColumn<String>(
@@ -156,13 +156,13 @@ class $TaskListsTable extends TaskLists
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {id};
+  Set<GeneratedColumn> get $primaryKey => <GeneratedColumn>{};
   @override
   TaskList map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return TaskList(
       id: attachedDatabase.options.types
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       title: attachedDatabase.options.types
           .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
     );

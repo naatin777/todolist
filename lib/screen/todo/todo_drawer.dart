@@ -10,10 +10,8 @@ class TodoDrawer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final taskList = ref.watch(taskListProvider);
-    final inbox =
-        (taskList.value?.where((element) => element.id == 1) ?? []).first;
     final taskListTile =
-        (taskList.value ?? []).where((element) => element.id != 1).map(
+        (taskList.value ?? []).where((element) => element.id != "").map(
               (e) => ListTile(
                 leading: const Icon(Icons.list),
                 title: Text(e.title),
@@ -31,13 +29,13 @@ class TodoDrawer extends ConsumerWidget {
               title: const Text("Today"),
               onTap: () {},
             ),
-            ListTile(
-              leading: const Icon(Icons.inbox),
-              title: Text(inbox.title),
-              onTap: () {
-                ref.read(todoNavigationProvider.notifier).changeTaskList(inbox);
-              },
-            ),
+            // ListTile(
+            //   leading: const Icon(Icons.inbox),
+            //   title: Text(inbox.title),
+            //   onTap: () {
+            //     ref.read(todoNavigationProvider.notifier).changeTaskList(inbox);
+            //   },
+            // ),
             const Divider(),
             for (ListTile tile in taskListTile) tile,
             if (taskListTile.isNotEmpty) const Divider(),

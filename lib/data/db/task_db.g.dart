@@ -8,8 +8,8 @@ part of 'task_db.dart';
 
 // ignore_for_file: type=lint
 class Task extends DataClass implements Insertable<Task> {
-  final int id;
-  final int list;
+  final String id;
+  final String list;
   final String title;
   final bool check;
   const Task(
@@ -20,8 +20,8 @@ class Task extends DataClass implements Insertable<Task> {
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['list'] = Variable<int>(list);
+    map['id'] = Variable<String>(id);
+    map['list'] = Variable<String>(list);
     map['title'] = Variable<String>(title);
     map['check'] = Variable<bool>(check);
     return map;
@@ -40,8 +40,8 @@ class Task extends DataClass implements Insertable<Task> {
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Task(
-      id: serializer.fromJson<int>(json['id']),
-      list: serializer.fromJson<int>(json['list']),
+      id: serializer.fromJson<String>(json['id']),
+      list: serializer.fromJson<String>(json['list']),
       title: serializer.fromJson<String>(json['title']),
       check: serializer.fromJson<bool>(json['check']),
     );
@@ -50,14 +50,14 @@ class Task extends DataClass implements Insertable<Task> {
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'list': serializer.toJson<int>(list),
+      'id': serializer.toJson<String>(id),
+      'list': serializer.toJson<String>(list),
       'title': serializer.toJson<String>(title),
       'check': serializer.toJson<bool>(check),
     };
   }
 
-  Task copyWith({int? id, int? list, String? title, bool? check}) => Task(
+  Task copyWith({String? id, String? list, String? title, bool? check}) => Task(
         id: id ?? this.id,
         list: list ?? this.list,
         title: title ?? this.title,
@@ -87,8 +87,8 @@ class Task extends DataClass implements Insertable<Task> {
 }
 
 class TasksCompanion extends UpdateCompanion<Task> {
-  final Value<int> id;
-  final Value<int> list;
+  final Value<String> id;
+  final Value<String> list;
   final Value<String> title;
   final Value<bool> check;
   const TasksCompanion({
@@ -99,15 +99,15 @@ class TasksCompanion extends UpdateCompanion<Task> {
   });
   TasksCompanion.insert({
     this.id = const Value.absent(),
-    required int list,
+    required String list,
     required String title,
     required bool check,
   })  : list = Value(list),
         title = Value(title),
         check = Value(check);
   static Insertable<Task> custom({
-    Expression<int>? id,
-    Expression<int>? list,
+    Expression<String>? id,
+    Expression<String>? list,
     Expression<String>? title,
     Expression<bool>? check,
   }) {
@@ -120,8 +120,8 @@ class TasksCompanion extends UpdateCompanion<Task> {
   }
 
   TasksCompanion copyWith(
-      {Value<int>? id,
-      Value<int>? list,
+      {Value<String>? id,
+      Value<String>? list,
       Value<String>? title,
       Value<bool>? check}) {
     return TasksCompanion(
@@ -136,10 +136,10 @@ class TasksCompanion extends UpdateCompanion<Task> {
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     if (id.present) {
-      map['id'] = Variable<int>(id.value);
+      map['id'] = Variable<String>(id.value);
     }
     if (list.present) {
-      map['list'] = Variable<int>(list.value);
+      map['list'] = Variable<String>(list.value);
     }
     if (title.present) {
       map['title'] = Variable<String>(title.value);
@@ -169,16 +169,16 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
   $TasksTable(this.attachedDatabase, [this._alias]);
   final VerificationMeta _idMeta = const VerificationMeta('id');
   @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
       'id', aliasedName, false,
-      type: DriftSqlType.int,
+      type: DriftSqlType.string,
       requiredDuringInsert: false,
-      defaultConstraints: 'PRIMARY KEY AUTOINCREMENT');
+      clientDefault: () => uuid.v4());
   final VerificationMeta _listMeta = const VerificationMeta('list');
   @override
-  late final GeneratedColumn<int> list = GeneratedColumn<int>(
+  late final GeneratedColumn<String> list = GeneratedColumn<String>(
       'list', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _titleMeta = const VerificationMeta('title');
   @override
   late final GeneratedColumn<String> title = GeneratedColumn<String>(
@@ -227,15 +227,15 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {id};
+  Set<GeneratedColumn> get $primaryKey => <GeneratedColumn>{};
   @override
   Task map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return Task(
       id: attachedDatabase.options.types
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
       list: attachedDatabase.options.types
-          .read(DriftSqlType.int, data['${effectivePrefix}list'])!,
+          .read(DriftSqlType.string, data['${effectivePrefix}list'])!,
       title: attachedDatabase.options.types
           .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
       check: attachedDatabase.options.types
