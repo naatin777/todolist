@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:todolist/constant.dart';
 import 'package:todolist/data/db/app_database.dart';
 import 'package:todolist/data/db/tables/task_list_table.dart';
 
@@ -11,6 +12,15 @@ class TaskListsDao extends DatabaseAccessor<AppDatabase>
 
   Stream<List<TaskList>> watchTaskList() {
     return (select(taskLists)).watch();
+  }
+
+  Future<TaskList> selectFromId(String id) async {
+    try {
+      return (await (select(taskLists)..where((tbl) => tbl.id.equals(id)))
+          .getSingle());
+    } catch (e) {
+      return inbox;
+    }
   }
 
   Future<int> insertTaskList(String title) {

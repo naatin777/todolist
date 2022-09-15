@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:todolist/constant.dart';
 import 'package:todolist/providers/task_provider.dart';
 import 'package:todolist/providers/todo_navigation_provider.dart';
 
@@ -22,7 +21,7 @@ class _AddTaskSheetState extends ConsumerState<AddTaskSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final taskList = ref.watch(todoNavigationProvider) ?? inbox;
+    final taskList = ref.watch(todoNavigationProvider);
     return ConstrainedBox(
       constraints: BoxConstraints(
         maxHeight:
