@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todolist/constant.dart';
+import 'package:todolist/data/db/app_database.dart';
 import 'package:todolist/providers/task_list_provider.dart';
 import 'package:todolist/providers/todo_navigation_provider.dart';
 import 'package:todolist/components/todo/new_list_dialog.dart';
@@ -11,16 +12,6 @@ class TodoDrawer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final taskList = ref.watch(taskListProvider);
-    final taskListTile =
-        (taskList.value ?? []).where((element) => element.id != "").map(
-              (e) => ListTile(
-                leading: const Icon(Icons.list),
-                title: Text(e.title),
-                onTap: () {
-                  ref.read(todoNavigationProvider.notifier).changeTaskList(e);
-                },
-              ),
-            );
     return Drawer(
       child: SafeArea(
         child: ListView(
@@ -35,11 +26,32 @@ class TodoDrawer extends ConsumerWidget {
               title: Text(inbox.title),
               onTap: () {
                 ref.read(todoNavigationProvider.notifier).changeTaskList(inbox);
+                Navigator.of(context).pop();
               },
             ),
             const Divider(),
-            for (ListTile tile in taskListTile) tile,
-            if (taskListTile.isNotEmpty) const Divider(),
+            taskList.when(
+              data: (data) {
+                return Column(
+                  children: [
+                    for (TaskList list in data)
+                      ListTile(
+                        leading: const Icon(Icons.list),
+                        title: Text(list.title),
+                        onTap: () {
+                          ref
+                              .read(todoNavigationProvider.notifier)
+                              .changeTaskList(list);
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    if (data.isNotEmpty) const Divider(),
+                  ],
+                );
+              },
+              error: (error, stackTrace) => Container(),
+              loading: () => Container(),
+            ),
             ListTile(
               leading: const Icon(Icons.add),
               title: const Text("Add new list"),
