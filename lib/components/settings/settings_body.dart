@@ -8,9 +8,9 @@ class SettingsBody extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = ref.watch(themeProvider);
     final homeNavigation = ref.watch(homeNavigationProvider);
     if (homeNavigation == NavigationItem.settings) {
+      final theme = ref.watch(themeProvider);
       return SingleChildScrollView(
         child: Column(
           children: [

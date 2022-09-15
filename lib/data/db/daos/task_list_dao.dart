@@ -27,9 +27,11 @@ class TaskListsDao extends DatabaseAccessor<AppDatabase>
     return into(taskLists).insert(TaskListsCompanion(title: Value(title)));
   }
 
-  Future<int> updateTaskList(TaskList taskList, String title) {
+  Future<int> updateTaskList({required TaskList taskList, String? title}) {
     return (update(taskLists)..where((tbl) => tbl.id.equals(taskList.id)))
-        .write(TaskListsCompanion(title: Value(title)));
+        .write(
+      TaskListsCompanion(title: Value(title ?? taskList.title)),
+    );
   }
 
   Future<void> deleteTaskList(TaskList taskList) {

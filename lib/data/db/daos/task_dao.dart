@@ -22,12 +22,17 @@ class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
     );
   }
 
-  Future<int> updateTask(Task task, String list, String title, bool check) {
+  Future<int> updateTask({
+    required Task task,
+    String? list,
+    String? title,
+    bool? check,
+  }) {
     return (update(tasks)..where((tbl) => tbl.id.equals(task.id))).write(
       TasksCompanion(
-        list: Value(list),
-        title: Value(title),
-        check: Value(check),
+        list: Value(list ?? task.list),
+        title: Value(title ?? task.title),
+        check: Value(check ?? task.check),
       ),
     );
   }

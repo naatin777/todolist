@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todolist/data/db/app_database.dart';
 
 final taskDatabaseProvider = Provider((ref) {
-  return AppDatabase.appDatabase.tasksDao;
+  return AppDatabase.getInstance().tasksDao;
 });
 
 final taskProvider = StreamProvider((ref) {

@@ -8,15 +8,15 @@ class TodoBody extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final listItem = ref.watch(taskProvider);
     final homeNavigation = ref.watch(homeNavigationProvider);
     if (homeNavigation == NavigationItem.todo) {
-      return listItem.when(
+      final tasks = ref.watch(taskProvider);
+      return tasks.when(
         data: (data) => ListView.separated(
           itemCount: data.length,
           itemBuilder: (context, index) {
             return Dismissible(
-              key: Key(data[index].toString()),
+              key: Key(data[index].id),
               background: Container(color: Colors.blue),
               secondaryBackground: Container(color: Colors.red),
               onDismissed: (direction) {},
@@ -24,12 +24,9 @@ class TodoBody extends ConsumerWidget {
                 leading: Checkbox(
                   value: data[index].check,
                   onChanged: (value) {
-                    ref.read(taskDatabaseProvider).updateTask(
-                          data[index],
-                          data[index].list,
-                          data[index].title,
-                          value ?? data[index].check,
-                        );
+                    ref
+                        .read(taskDatabaseProvider)
+                        .updateTask(task: data[index], check: value);
                   },
                   activeColor: Colors.transparent,
                 ),
