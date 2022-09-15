@@ -11,7 +11,7 @@ class TodoAppBar extends ConsumerWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final taskList = ref.watch(todoNavigationProvider) ?? defaultTaskList;
+    final taskList = ref.watch(todoNavigationProvider) ?? inbox;
     return AppBar(
       centerTitle: true,
       title: Text(taskList.title),

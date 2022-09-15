@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:todolist/constant.dart';
 import 'package:todolist/providers/task_list_provider.dart';
 import 'package:todolist/providers/todo_navigation_provider.dart';
 import 'package:todolist/screen/todo/new_list_dialog.dart';
@@ -29,13 +30,13 @@ class TodoDrawer extends ConsumerWidget {
               title: const Text("Today"),
               onTap: () {},
             ),
-            // ListTile(
-            //   leading: const Icon(Icons.inbox),
-            //   title: Text(inbox.title),
-            //   onTap: () {
-            //     ref.read(todoNavigationProvider.notifier).changeTaskList(inbox);
-            //   },
-            // ),
+            ListTile(
+              leading: const Icon(Icons.inbox),
+              title: Text(inbox.title),
+              onTap: () {
+                ref.read(todoNavigationProvider.notifier).changeTaskList(inbox);
+              },
+            ),
             const Divider(),
             for (ListTile tile in taskListTile) tile,
             if (taskListTile.isNotEmpty) const Divider(),

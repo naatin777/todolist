@@ -22,7 +22,7 @@ class _AddTaskSheetState extends ConsumerState<AddTaskSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final taskList = ref.watch(todoNavigationProvider) ?? defaultTaskList;
+    final taskList = ref.watch(todoNavigationProvider) ?? inbox;
     return SingleChildScrollView(
       padding: EdgeInsets.only(
         left: 8,
