@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todolist/pages/home.dart';
 import 'package:todolist/providers/theme_provider.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});
@@ -11,6 +12,15 @@ class MyApp extends ConsumerWidget {
     final theme = ref.watch(themeProvider);
     return MaterialApp(
       title: 'todolist',
+      supportedLocales: const [
+        Locale('en', ''),
+        Locale('ja', ''),
+      ],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
       themeMode: theme,
       theme: ThemeData(
         useMaterial3: true,
