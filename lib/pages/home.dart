@@ -9,7 +9,7 @@ import 'package:todolist/components/settings/settings_app_bar.dart';
 import 'package:todolist/components/settings/settings_body.dart';
 import 'package:todolist/components/todo/todo_app_bar.dart';
 import 'package:todolist/components/todo/todo_body.dart';
-import 'package:todolist/components/todo/todo_button.dart';
+import 'package:todolist/components/todo/todo_fab.dart';
 import 'package:todolist/components/todo/todo_drawer.dart';
 
 class Home extends ConsumerWidget {
@@ -113,7 +113,7 @@ extension on NavigationItem {
   Widget? get floatingActionButton {
     switch (this) {
       case NavigationItem.todo:
-        return const TodoButton();
+        return const TodoFab();
       default:
         return null;
     }
