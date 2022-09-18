@@ -19,7 +19,9 @@ class TodoBody extends ConsumerWidget {
               key: Key(data[index].id),
               background: Container(color: Colors.blue),
               secondaryBackground: Container(color: Colors.red),
-              onDismissed: (direction) {},
+              onDismissed: (direction) {
+                ref.read(taskDatabaseProvider).deleteTask(data[index]);
+              },
               child: ListTile(
                 leading: Checkbox(
                   value: data[index].check,
