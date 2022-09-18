@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="io.github.tknk0369.todolist.todolist">
+    package="io.github.tknk0369.todolist">
    <application
         android:label="todolist"
         android:name="${applicationName}"
