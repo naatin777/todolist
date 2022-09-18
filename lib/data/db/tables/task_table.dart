@@ -9,4 +9,6 @@ class Tasks extends Table {
   TextColumn get title => text()();
 
   BoolColumn get check => boolean()();
+
+  DateTimeColumn get deadline => dateTime().nullable()();
 }

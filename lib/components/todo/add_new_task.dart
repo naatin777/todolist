@@ -29,6 +29,7 @@ class _AddNewTaskState extends ConsumerState<AddNewTask> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Row(
           children: [
@@ -88,7 +89,20 @@ class _AddNewTaskState extends ConsumerState<AddNewTask> {
               ),
               IconButton(
                 tooltip: "deadline",
-                onPressed: () {},
+                onPressed: () async {
+                  final now = DateTime.now();
+                  final date = await showDatePicker(
+                    context: context,
+                    initialDate: now,
+                    firstDate: DateTime(now.year - 100),
+                    lastDate: DateTime(now.year + 100),
+                  );
+                  final time = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay.fromDateTime(now),
+                  );
+                  ref.read(addNewTaskProvider).changeDateTime(date, time);
+                },
                 icon: const Icon(Icons.calendar_month),
               ),
               IconButton(
@@ -97,7 +111,7 @@ class _AddNewTaskState extends ConsumerState<AddNewTask> {
                 icon: const Icon(Icons.add_task),
               ),
               IconButton(
-                tooltip: "memo",
+                tooltip: "description",
                 onPressed: () {},
                 icon: const Icon(Icons.article),
               ),

@@ -14,6 +14,8 @@ class AddNewTaskProvider extends ChangeNotifier {
 
   Priority get priority => _priority;
 
+  DateTime? _dateTime;
+
   changeTitle(String title) {
     _title = title;
     notifyListeners();
@@ -29,8 +31,25 @@ class AddNewTaskProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  changeDateTime(DateTime? dateTime, TimeOfDay? timeOfDay) {
+    if (dateTime != null) {
+      _dateTime = DateTime(
+        dateTime.year,
+        dateTime.month,
+        dateTime.day,
+        timeOfDay?.hour ?? dateTime.hour,
+        timeOfDay?.minute ?? dateTime.minute,
+      );
+    }
+  }
+
   addNewTask() {
-    _appDatabase.tasksDao.insertTask(_list.id, _title, false);
+    _appDatabase.tasksDao.insertTask(
+      list: _list.id,
+      title: _title,
+      check: false,
+      deadline: _dateTime,
+    );
   }
 }
 

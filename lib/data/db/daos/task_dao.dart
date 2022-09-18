@@ -12,12 +12,18 @@ class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
     return (select(tasks)).watch();
   }
 
-  Future<int> insertTask(String list, String title, bool check) {
+  Future<int> insertTask({
+    required String list,
+    required String title,
+    required bool check,
+    DateTime? deadline,
+  }) {
     return into(tasks).insert(
       TasksCompanion(
         list: Value(list),
         title: Value(title),
         check: Value(check),
+        deadline: Value(deadline),
       ),
     );
   }
@@ -27,12 +33,14 @@ class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
     String? list,
     String? title,
     bool? check,
+    DateTime? deadline,
   }) {
     return (update(tasks)..where((tbl) => tbl.id.equals(task.id))).write(
       TasksCompanion(
         list: Value(list ?? task.list),
         title: Value(title ?? task.title),
         check: Value(check ?? task.check),
+        deadline: Value(deadline ?? task.deadline),
       ),
     );
   }
