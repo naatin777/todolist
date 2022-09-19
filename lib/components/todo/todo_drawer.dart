@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todolist/constant.dart';
 import 'package:todolist/data/db/app_database.dart';
-import 'package:todolist/providers/task_list_provider.dart';
 import 'package:todolist/providers/todo_navigation_provider.dart';
 import 'package:todolist/components/todo/new_list_dialog.dart';
 
@@ -11,7 +10,7 @@ class TodoDrawer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final taskList = ref.watch(taskListProvider);
+    final taskList = ref.watch(taskLists);
     return Drawer(
       child: SafeArea(
         child: ListView(

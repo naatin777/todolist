@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:todolist/constant.dart';
-import 'package:todolist/providers/task_list_provider.dart';
 import 'package:todolist/providers/todo_navigation_provider.dart';
 
 class TodoAppBar extends ConsumerWidget implements PreferredSizeWidget {
@@ -20,8 +18,9 @@ class TodoAppBar extends ConsumerWidget implements PreferredSizeWidget {
         PopupMenuButton<String>(
           onSelected: (value) {
             if (value == "Delete") {
-              ref.read(taskListDatabaseProvider).deleteTaskList(taskList);
-              ref.read(todoNavigationProvider.notifier).changeTaskList(inbox);
+              ref
+                  .read(todoNavigationProvider.notifier)
+                  .deleteTaskList(taskList);
             }
           },
           itemBuilder: (context) {

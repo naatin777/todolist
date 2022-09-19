@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:todolist/providers/task_list_provider.dart';
+import 'package:todolist/providers/todo_navigation_provider.dart';
 
 class NewListDialog extends ConsumerStatefulWidget {
   const NewListDialog({Key? key}) : super(key: key);
@@ -29,6 +29,12 @@ class _NewListDialogState extends ConsumerState<NewListDialog> {
           border: OutlineInputBorder(),
           labelText: 'List title',
         ),
+        onSubmitted: (value) {
+          ref
+              .read(todoNavigationProvider.notifier)
+              .addTaskList(titleController.text);
+          Navigator.of(context).pop();
+        },
       ),
       actionsAlignment: MainAxisAlignment.end,
       actions: [
@@ -41,8 +47,8 @@ class _NewListDialogState extends ConsumerState<NewListDialog> {
         TextButton(
           onPressed: () {
             ref
-                .read(taskListDatabaseProvider)
-                .insertTaskList(titleController.text);
+                .read(todoNavigationProvider.notifier)
+                .addTaskList(titleController.text);
             Navigator.of(context).pop();
           },
           child: const Text("Ok"),
