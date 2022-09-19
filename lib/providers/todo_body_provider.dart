@@ -18,7 +18,7 @@ final todoBodyProvider = ChangeNotifierProvider((ref) {
   return TodoBodyProvider();
 });
 
-final tasksProvider = StreamProvider((ref) {
+final tasksProvider = StreamProvider.family((ref, TaskList taskList) {
   final tasksDao = AppDatabase.getInstance().tasksDao;
-  return tasksDao.watchTask();
+  return tasksDao.watchTaskFromList(taskList);
 });

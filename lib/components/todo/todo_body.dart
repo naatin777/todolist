@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todolist/providers/home_navigation_provider.dart';
 import 'package:todolist/providers/todo_body_provider.dart';
+import 'package:todolist/providers/todo_navigation_provider.dart';
 
 class TodoBody extends ConsumerWidget {
   const TodoBody({Key? key}) : super(key: key);
@@ -10,7 +11,8 @@ class TodoBody extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final homeNavigation = ref.watch(homeNavigationProvider);
     if (homeNavigation == NavigationItem.todo) {
-      final tasks = ref.watch(tasksProvider);
+      final todoNavigation = ref.watch(todoNavigationProvider);
+      final tasks = ref.watch(tasksProvider(todoNavigation));
       return tasks.when(
         data: (data) => ListView.separated(
           itemCount: data.length,
