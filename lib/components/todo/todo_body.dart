@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todolist/providers/home_navigation_provider.dart';
-import 'package:todolist/providers/task_provider.dart';
+import 'package:todolist/providers/todo_body_provider.dart';
 
 class TodoBody extends ConsumerWidget {
   const TodoBody({Key? key}) : super(key: key);
@@ -10,7 +10,7 @@ class TodoBody extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final homeNavigation = ref.watch(homeNavigationProvider);
     if (homeNavigation == NavigationItem.todo) {
-      final tasks = ref.watch(taskProvider);
+      final tasks = ref.watch(tasksProvider);
       return tasks.when(
         data: (data) => ListView.separated(
           itemCount: data.length,
@@ -20,20 +20,33 @@ class TodoBody extends ConsumerWidget {
               background: Container(color: Colors.blue),
               secondaryBackground: Container(color: Colors.red),
               onDismissed: (direction) {
-                ref.read(taskDatabaseProvider).deleteTask(data[index]);
+                ref.read(todoBodyProvider).deleteTask(data[index]);
               },
               child: ListTile(
                 leading: Checkbox(
                   value: data[index].check,
                   onChanged: (value) {
                     ref
-                        .read(taskDatabaseProvider)
-                        .updateTask(task: data[index], check: value);
+                        .read(todoBodyProvider)
+                        .changeTaskCheck(data[index], value);
                   },
                   activeColor: Colors.transparent,
                 ),
-                title: Text(data[index].title),
-                subtitle: const Text("subtitle"),
+                title: Text(
+                  data[index].title,
+                  style: TextStyle(
+                    decoration: data[index].check
+                        ? TextDecoration.lineThrough
+                        : TextDecoration.none,
+                  ),
+                ),
+                subtitle: Text(
+                  "subtitle",
+                  style: TextStyle(
+                      decoration: data[index].check
+                          ? TextDecoration.lineThrough
+                          : TextDecoration.none),
+                ),
                 onTap: () {},
                 horizontalTitleGap: 0,
                 contentPadding: const EdgeInsets.symmetric(horizontal: 4.0),
