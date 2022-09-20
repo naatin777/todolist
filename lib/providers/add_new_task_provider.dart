@@ -2,13 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todolist/constant.dart';
 import 'package:todolist/data/db/app_database.dart';
+import 'package:todolist/providers/todo_navigation_provider.dart';
 
 class AddNewTaskProvider extends ChangeNotifier {
+  AddNewTaskProvider(this.ref) {
+    _list = ref.watch(todoNavigationProvider);
+  }
+
+  final Ref ref;
+
   final _appDatabase = AppDatabase.getInstance();
 
   String _title = "";
 
   TaskList _list = inbox;
+
+  TaskList get list => _list;
 
   Priority _priority = Priority.no;
 
@@ -53,8 +62,8 @@ class AddNewTaskProvider extends ChangeNotifier {
   }
 }
 
-final addNewTaskProvider = ChangeNotifierProvider((ref) {
-  return AddNewTaskProvider();
+final addNewTaskProvider = ChangeNotifierProvider.autoDispose((ref) {
+  return AddNewTaskProvider(ref);
 });
 
 enum Priority {

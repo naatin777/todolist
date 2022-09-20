@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:todolist/constant.dart';
+import 'package:todolist/data/db/app_database.dart';
 import 'package:todolist/providers/add_new_task_provider.dart';
+import 'package:todolist/providers/todo_navigation_provider.dart';
 
 class AddNewTask extends ConsumerStatefulWidget {
   const AddNewTask({super.key});
@@ -28,6 +31,8 @@ class _AddNewTaskState extends ConsumerState<AddNewTask> {
 
   @override
   Widget build(BuildContext context) {
+    final taskList = ref.watch(taskLists);
+    final list = ref.watch(addNewTaskProvider.select((value) => value.list));
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -67,6 +72,28 @@ class _AddNewTaskState extends ConsumerState<AddNewTask> {
               icon: const Icon(Icons.send),
             )
           ],
+        ),
+        taskList.when(
+          data: (value) => DropdownButton<TaskList>(
+            items: [
+              DropdownMenuItem(
+                value: inbox,
+                child: Text(inbox.title),
+              ),
+              for (TaskList item in value)
+                DropdownMenuItem(
+                  value: item,
+                  child: Text(item.title),
+                ),
+            ],
+            value: list,
+            onChanged: (value) {
+              ref.read(addNewTaskProvider.notifier).changeList(value ?? inbox);
+            },
+            isExpanded: true,
+          ),
+          error: (error, stackTrace) => Container(),
+          loading: () => Container(),
         ),
         Padding(
           padding: EdgeInsets.only(
