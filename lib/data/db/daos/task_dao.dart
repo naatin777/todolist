@@ -17,11 +17,16 @@ class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
         .watch();
   }
 
+  Stream<List<Task>> watchTaskFromId(List<String> idList) {
+    return ((select(tasks))..where((tbl) => tbl.id.isNotIn(idList))).watch();
+  }
+
   Future<int> insertTask({
     required String list,
     required String title,
     required bool check,
     DateTime? deadline,
+    required String subtask,
   }) {
     return into(tasks).insert(
       TasksCompanion(
@@ -29,6 +34,7 @@ class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
         title: Value(title),
         check: Value(check),
         deadline: Value(deadline),
+        subtask: Value(subtask),
       ),
     );
   }
@@ -39,6 +45,7 @@ class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
     String? title,
     bool? check,
     DateTime? deadline,
+    String? subtask,
   }) {
     return (update(tasks)..where((tbl) => tbl.id.equals(task.id))).write(
       TasksCompanion(
@@ -46,6 +53,7 @@ class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
         title: Value(title ?? task.title),
         check: Value(check ?? task.check),
         deadline: Value(deadline ?? task.deadline),
+        subtask: Value(subtask ?? task.subtask),
       ),
     );
   }

@@ -134,7 +134,14 @@ class _AddNewTaskState extends ConsumerState<AddNewTask> {
               ),
               IconButton(
                 tooltip: "subtask",
-                onPressed: () {},
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return const SubTaskDialog();
+                    },
+                  );
+                },
                 icon: const Icon(Icons.add_task),
               ),
               IconButton(
@@ -177,6 +184,51 @@ class PriorityDialog extends ConsumerWidget {
           selected: priority == e,
         );
       }).toList(),
+    );
+  }
+}
+
+class SubTaskDialog extends ConsumerStatefulWidget {
+  const SubTaskDialog({super.key});
+
+  @override
+  ConsumerState<SubTaskDialog> createState() => _SubTaskDialogState();
+}
+
+class _SubTaskDialogState extends ConsumerState<SubTaskDialog> {
+  final _titleController = TextEditingController();
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final subTask = ref.watch(addNewTaskProvider).subtask;
+    return SimpleDialog(
+      title: const Text("Subtask"),
+      contentPadding: const EdgeInsets.fromLTRB(8.0, 12.0, 8.0, 16.0),
+      children: [
+        TextField(
+          controller: _titleController,
+          onSubmitted: (value) {
+            ref.read(addNewTaskProvider).addSubtask(_titleController.text);
+            _titleController.clear();
+          },
+        ),
+        for (int i = 0; i < subTask.length; i++)
+          ListTile(
+            title: Text(subTask[i]),
+            trailing: IconButton(
+              onPressed: () {
+                ref.read(addNewTaskProvider).removeSubtask(i);
+              },
+              icon: const Icon(Icons.delete),
+            ),
+          ),
+      ],
     );
   }
 }

@@ -11,4 +11,6 @@ class Tasks extends Table {
   BoolColumn get check => boolean()();
 
   DateTimeColumn get deadline => dateTime().nullable()();
+
+  TextColumn get subtask => text()();
 }

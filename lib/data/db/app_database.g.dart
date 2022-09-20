@@ -180,12 +180,14 @@ class Task extends DataClass implements Insertable<Task> {
   final String title;
   final bool check;
   final DateTime? deadline;
+  final String subtask;
   const Task(
       {required this.id,
       required this.list,
       required this.title,
       required this.check,
-      this.deadline});
+      this.deadline,
+      required this.subtask});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -196,6 +198,7 @@ class Task extends DataClass implements Insertable<Task> {
     if (!nullToAbsent || deadline != null) {
       map['deadline'] = Variable<DateTime>(deadline);
     }
+    map['subtask'] = Variable<String>(subtask);
     return map;
   }
 
@@ -208,6 +211,7 @@ class Task extends DataClass implements Insertable<Task> {
       deadline: deadline == null && nullToAbsent
           ? const Value.absent()
           : Value(deadline),
+      subtask: Value(subtask),
     );
   }
 
@@ -220,6 +224,7 @@ class Task extends DataClass implements Insertable<Task> {
       title: serializer.fromJson<String>(json['title']),
       check: serializer.fromJson<bool>(json['check']),
       deadline: serializer.fromJson<DateTime?>(json['deadline']),
+      subtask: serializer.fromJson<String>(json['subtask']),
     );
   }
   @override
@@ -231,6 +236,7 @@ class Task extends DataClass implements Insertable<Task> {
       'title': serializer.toJson<String>(title),
       'check': serializer.toJson<bool>(check),
       'deadline': serializer.toJson<DateTime?>(deadline),
+      'subtask': serializer.toJson<String>(subtask),
     };
   }
 
@@ -239,13 +245,15 @@ class Task extends DataClass implements Insertable<Task> {
           String? list,
           String? title,
           bool? check,
-          Value<DateTime?> deadline = const Value.absent()}) =>
+          Value<DateTime?> deadline = const Value.absent(),
+          String? subtask}) =>
       Task(
         id: id ?? this.id,
         list: list ?? this.list,
         title: title ?? this.title,
         check: check ?? this.check,
         deadline: deadline.present ? deadline.value : this.deadline,
+        subtask: subtask ?? this.subtask,
       );
   @override
   String toString() {
@@ -254,13 +262,14 @@ class Task extends DataClass implements Insertable<Task> {
           ..write('list: $list, ')
           ..write('title: $title, ')
           ..write('check: $check, ')
-          ..write('deadline: $deadline')
+          ..write('deadline: $deadline, ')
+          ..write('subtask: $subtask')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, list, title, check, deadline);
+  int get hashCode => Object.hash(id, list, title, check, deadline, subtask);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -269,7 +278,8 @@ class Task extends DataClass implements Insertable<Task> {
           other.list == this.list &&
           other.title == this.title &&
           other.check == this.check &&
-          other.deadline == this.deadline);
+          other.deadline == this.deadline &&
+          other.subtask == this.subtask);
 }
 
 class TasksCompanion extends UpdateCompanion<Task> {
@@ -278,12 +288,14 @@ class TasksCompanion extends UpdateCompanion<Task> {
   final Value<String> title;
   final Value<bool> check;
   final Value<DateTime?> deadline;
+  final Value<String> subtask;
   const TasksCompanion({
     this.id = const Value.absent(),
     this.list = const Value.absent(),
     this.title = const Value.absent(),
     this.check = const Value.absent(),
     this.deadline = const Value.absent(),
+    this.subtask = const Value.absent(),
   });
   TasksCompanion.insert({
     this.id = const Value.absent(),
@@ -291,15 +303,18 @@ class TasksCompanion extends UpdateCompanion<Task> {
     required String title,
     required bool check,
     this.deadline = const Value.absent(),
+    required String subtask,
   })  : list = Value(list),
         title = Value(title),
-        check = Value(check);
+        check = Value(check),
+        subtask = Value(subtask);
   static Insertable<Task> custom({
     Expression<String>? id,
     Expression<String>? list,
     Expression<String>? title,
     Expression<bool>? check,
     Expression<DateTime>? deadline,
+    Expression<String>? subtask,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -307,6 +322,7 @@ class TasksCompanion extends UpdateCompanion<Task> {
       if (title != null) 'title': title,
       if (check != null) 'check': check,
       if (deadline != null) 'deadline': deadline,
+      if (subtask != null) 'subtask': subtask,
     });
   }
 
@@ -315,13 +331,15 @@ class TasksCompanion extends UpdateCompanion<Task> {
       Value<String>? list,
       Value<String>? title,
       Value<bool>? check,
-      Value<DateTime?>? deadline}) {
+      Value<DateTime?>? deadline,
+      Value<String>? subtask}) {
     return TasksCompanion(
       id: id ?? this.id,
       list: list ?? this.list,
       title: title ?? this.title,
       check: check ?? this.check,
       deadline: deadline ?? this.deadline,
+      subtask: subtask ?? this.subtask,
     );
   }
 
@@ -343,6 +361,9 @@ class TasksCompanion extends UpdateCompanion<Task> {
     if (deadline.present) {
       map['deadline'] = Variable<DateTime>(deadline.value);
     }
+    if (subtask.present) {
+      map['subtask'] = Variable<String>(subtask.value);
+    }
     return map;
   }
 
@@ -353,7 +374,8 @@ class TasksCompanion extends UpdateCompanion<Task> {
           ..write('list: $list, ')
           ..write('title: $title, ')
           ..write('check: $check, ')
-          ..write('deadline: $deadline')
+          ..write('deadline: $deadline, ')
+          ..write('subtask: $subtask')
           ..write(')'))
         .toString();
   }
@@ -393,8 +415,14 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
   late final GeneratedColumn<DateTime> deadline = GeneratedColumn<DateTime>(
       'deadline', aliasedName, true,
       type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  final VerificationMeta _subtaskMeta = const VerificationMeta('subtask');
   @override
-  List<GeneratedColumn> get $columns => [id, list, title, check, deadline];
+  late final GeneratedColumn<String> subtask = GeneratedColumn<String>(
+      'subtask', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, list, title, check, deadline, subtask];
   @override
   String get aliasedName => _alias ?? 'tasks';
   @override
@@ -429,6 +457,12 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
       context.handle(_deadlineMeta,
           deadline.isAcceptableOrUnknown(data['deadline']!, _deadlineMeta));
     }
+    if (data.containsKey('subtask')) {
+      context.handle(_subtaskMeta,
+          subtask.isAcceptableOrUnknown(data['subtask']!, _subtaskMeta));
+    } else if (isInserting) {
+      context.missing(_subtaskMeta);
+    }
     return context;
   }
 
@@ -448,6 +482,8 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
           .read(DriftSqlType.bool, data['${effectivePrefix}check'])!,
       deadline: attachedDatabase.options.types
           .read(DriftSqlType.dateTime, data['${effectivePrefix}deadline']),
+      subtask: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}subtask'])!,
     );
   }
 

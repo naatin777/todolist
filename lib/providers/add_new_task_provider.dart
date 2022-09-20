@@ -25,6 +25,10 @@ class AddNewTaskProvider extends ChangeNotifier {
 
   DateTime? _dateTime;
 
+  final List<String> _subtask = [];
+
+  List<String> get subtask => _subtask;
+
   changeTitle(String title) {
     _title = title;
     notifyListeners();
@@ -52,12 +56,23 @@ class AddNewTaskProvider extends ChangeNotifier {
     }
   }
 
+  addSubtask(String title) {
+    _subtask.add(title);
+    notifyListeners();
+  }
+
+  removeSubtask(int index) {
+    _subtask.removeAt(index);
+    notifyListeners();
+  }
+
   addNewTask() {
     _appDatabase.tasksDao.insertTask(
       list: _list.id,
       title: _title,
       check: false,
       deadline: _dateTime,
+      subtask: _subtask.reduce((value, element) => "$element,$value"),
     );
   }
 }
