@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:todolist/pages/home.dart';
-import 'package:todolist/providers/theme_provider.dart';
+import 'package:todolist/presentation/widgets/single_touch_container.dart';
+import 'package:todolist/presentation/pages/home/home.dart';
+import 'package:todolist/presentation/providers/theme_provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class MyApp extends ConsumerWidget {
-  const MyApp({super.key});
+class App extends ConsumerWidget {
+  const App({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -70,7 +71,9 @@ class MyApp extends ConsumerWidget {
           },
         ),
       ),
-      home: const Home(),
+      home: SingleTouchContainer(
+        child: Home(),
+      ),
     );
   }
 }

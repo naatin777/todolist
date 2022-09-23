@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todolist/constant.dart';
 import 'package:todolist/data/db/app_database.dart';
-import 'package:todolist/providers/todo_navigation_provider.dart';
+import 'package:todolist/presentation/providers/todo_navigation_provider.dart';
 
 class AddNewTaskProvider extends ChangeNotifier {
   AddNewTaskProvider(this.ref) {

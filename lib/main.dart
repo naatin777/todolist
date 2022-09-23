@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:todolist/app.dart';
-import 'package:todolist/components/common/single_touch_container.dart';
-import 'package:todolist/providers/theme_provider.dart';
-import 'package:todolist/providers/todo_navigation_provider.dart';
+import 'package:todolist/presentation/app.dart';
+import 'package:todolist/presentation/providers/theme_provider.dart';
+import 'package:todolist/presentation/providers/todo_navigation_provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,9 +23,7 @@ Future<void> main() async {
           todoNavigationProviderFamily(taskList),
         ),
       ],
-      child: const SingleTouchContainer(
-        child: MyApp(),
-      ),
+      child: const App(),
     ),
   );
 }

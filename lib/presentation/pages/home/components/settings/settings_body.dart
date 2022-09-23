@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:todolist/providers/home_navigation_provider.dart';
-import 'package:todolist/providers/theme_provider.dart';
+import 'package:todolist/presentation/providers/home_navigation_provider.dart';
+import 'package:todolist/presentation/providers/theme_provider.dart';
 
 class SettingsBody extends ConsumerWidget {
   const SettingsBody({Key? key}) : super(key: key);

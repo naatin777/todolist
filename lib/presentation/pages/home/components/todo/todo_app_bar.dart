@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:todolist/providers/multi_select_provider.dart';
-import 'package:todolist/providers/todo_navigation_provider.dart';
+import 'package:todolist/presentation/providers/multi_select_provider.dart';
+import 'package:todolist/presentation/providers/todo_navigation_provider.dart';
 
 class TodoAppBar extends ConsumerWidget implements PreferredSizeWidget {
   const TodoAppBar({Key? key}) : super(key: key);

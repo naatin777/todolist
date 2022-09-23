@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:todolist/providers/todo_navigation_provider.dart';
+import 'package:todolist/presentation/providers/todo_navigation_provider.dart';
 
 class NewListDialog extends ConsumerStatefulWidget {
   const NewListDialog({Key? key}) : super(key: key);

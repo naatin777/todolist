@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:todolist/providers/home_navigation_provider.dart';
-import 'package:todolist/components/analytics/analytics_app_bar.dart';
-import 'package:todolist/components/analytics/analytics_body.dart';
-import 'package:todolist/components/search/search_app_bar.dart';
-import 'package:todolist/components/search/search_body.dart';
-import 'package:todolist/components/settings/settings_app_bar.dart';
-import 'package:todolist/components/settings/settings_body.dart';
-import 'package:todolist/components/todo/todo_app_bar.dart';
-import 'package:todolist/components/todo/todo_body.dart';
-import 'package:todolist/components/todo/todo_fab.dart';
-import 'package:todolist/components/todo/todo_drawer.dart';
-import 'package:todolist/providers/multi_select_provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:todolist/presentation/providers/home_navigation_provider.dart';
+import 'package:todolist/presentation/pages/home/components/analytics/analytics_app_bar.dart';
+import 'package:todolist/presentation/pages/home/components/analytics/analytics_body.dart';
+import 'package:todolist/presentation/pages/home/components/search/search_app_bar.dart';
+import 'package:todolist/presentation/pages/home/components/search/search_body.dart';
+import 'package:todolist/presentation/pages/home/components/settings/settings_app_bar.dart';
+import 'package:todolist/presentation/pages/home/components/settings/settings_body.dart';
+import 'package:todolist/presentation/pages/home/components/todo/todo_app_bar.dart';
+import 'package:todolist/presentation/pages/home/components/todo/todo_body.dart';
+import 'package:todolist/presentation/pages/home/components/todo/todo_fab.dart';
+import 'package:todolist/presentation/pages/home/components/todo/todo_drawer.dart';
+import 'package:todolist/presentation/providers/multi_select_provider.dart';
 
 class Home extends ConsumerWidget {
   const Home({Key? key}) : super(key: key);
