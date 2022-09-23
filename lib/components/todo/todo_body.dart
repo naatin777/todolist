@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todolist/providers/home_navigation_provider.dart';
+import 'package:todolist/providers/multi_select_provider.dart';
 import 'package:todolist/providers/todo_body_provider.dart';
 import 'package:todolist/providers/todo_navigation_provider.dart';
 
@@ -50,6 +51,9 @@ class TodoBody extends ConsumerWidget {
                           : TextDecoration.none),
                 ),
                 onTap: () {},
+                onLongPress: () {
+                  ref.read(multiSelectProvider.notifier).onSelect();
+                },
                 horizontalTitleGap: 0,
                 contentPadding: const EdgeInsets.symmetric(horizontal: 4.0),
               ),

@@ -11,6 +11,7 @@ import 'package:todolist/components/todo/todo_app_bar.dart';
 import 'package:todolist/components/todo/todo_body.dart';
 import 'package:todolist/components/todo/todo_fab.dart';
 import 'package:todolist/components/todo/todo_drawer.dart';
+import 'package:todolist/providers/multi_select_provider.dart';
 
 class Home extends ConsumerWidget {
   const Home({Key? key}) : super(key: key);
@@ -18,42 +19,54 @@ class Home extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final homeNavigation = ref.watch(homeNavigationProvider);
-    return Scaffold(
-      appBar: homeNavigation.appBar,
-      drawer: homeNavigation.drawer,
-      body: Navigator(
-        pages: [
-          if (NavigationItem.todo == homeNavigation)
-            const MaterialPage(
-              key: ValueKey(NavigationItem.todo),
-              child: TodoBody(),
-            ),
-          if (NavigationItem.search == homeNavigation)
-            const MaterialPage(
-              key: ValueKey(NavigationItem.search),
-              child: SearchBody(),
-            ),
-          if (NavigationItem.analytics == homeNavigation)
-            const MaterialPage(
-              key: ValueKey(NavigationItem.analytics),
-              child: AnalyticsBody(),
-            ),
-          if (NavigationItem.settings == homeNavigation)
-            const MaterialPage(
-              key: ValueKey(NavigationItem.settings),
-              child: SettingsBody(),
-            ),
-        ],
-        onPopPage: (route, result) => route.didPop(result),
+    final multiSelect = ref.watch(multiSelectProvider);
+    return WillPopScope(
+      child: Scaffold(
+        appBar: homeNavigation.appBar,
+        drawer: homeNavigation.drawer,
+        body: Navigator(
+          pages: [
+            if (NavigationItem.todo == homeNavigation)
+              const MaterialPage(
+                key: ValueKey(NavigationItem.todo),
+                child: TodoBody(),
+              ),
+            if (NavigationItem.search == homeNavigation)
+              const MaterialPage(
+                key: ValueKey(NavigationItem.search),
+                child: SearchBody(),
+              ),
+            if (NavigationItem.analytics == homeNavigation)
+              const MaterialPage(
+                key: ValueKey(NavigationItem.analytics),
+                child: AnalyticsBody(),
+              ),
+            if (NavigationItem.settings == homeNavigation)
+              const MaterialPage(
+                key: ValueKey(NavigationItem.settings),
+                child: SettingsBody(),
+              ),
+          ],
+          onPopPage: (route, result) => false,
+        ),
+        floatingActionButton: homeNavigation.floatingActionButton,
+        bottomNavigationBar: NavigationBar(
+          selectedIndex: homeNavigation.index,
+          onDestinationSelected: (int index) {
+            ref.read(homeNavigationProvider.notifier).changeNavigation(index);
+          },
+          destinations:
+              NavigationItem.values.map((e) => e.destination).toList(),
+        ),
       ),
-      floatingActionButton: homeNavigation.floatingActionButton,
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: homeNavigation.index,
-        onDestinationSelected: (int index) {
-          ref.read(homeNavigationProvider.notifier).changeNavigation(index);
-        },
-        destinations: NavigationItem.values.map((e) => e.destination).toList(),
-      ),
+      onWillPop: () async {
+        if (multiSelect) {
+          ref.read(multiSelectProvider.notifier).onDisable();
+          return false;
+        } else {
+          return true;
+        }
+      },
     );
   }
 }
