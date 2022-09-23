@@ -72,7 +72,9 @@ class AddNewTaskProvider extends ChangeNotifier {
       title: _title,
       check: false,
       deadline: _dateTime,
-      subtask: _subtask.reduce((value, element) => "$element,$value"),
+      subtask: _subtask.isEmpty
+          ? ""
+          : _subtask.reduce((value, element) => "$element,$value"),
     );
   }
 }
