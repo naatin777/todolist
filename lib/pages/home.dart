@@ -12,6 +12,7 @@ import 'package:todolist/components/todo/todo_body.dart';
 import 'package:todolist/components/todo/todo_fab.dart';
 import 'package:todolist/components/todo/todo_drawer.dart';
 import 'package:todolist/providers/multi_select_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Home extends ConsumerWidget {
   const Home({Key? key}) : super(key: key);
