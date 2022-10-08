@@ -1,6 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:todolist/data/db/app_database.dart';
-import 'package:todolist/presentation/providers/add_new_task_provider.dart';
 
 part 'add_new_task_model.freezed.dart';
 
