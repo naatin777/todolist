@@ -7,11 +7,11 @@ class SearchBody extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final homeNavigation = ref.watch(homeNavigationProvider);
-    if (homeNavigation == NavigationItem.search) {
+    final homeScreen = ref.watch(homeNavigationProvider);
+    if (homeScreen == HomeScreen.search) {
       return Container();
     } else {
-      return Container();
+      return const SizedBox();
     }
   }
 }

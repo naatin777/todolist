@@ -11,7 +11,7 @@ class App extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = ref.watch(themeProvider);
+    final themeMode = ref.watch(themeProvider);
     return MaterialApp(
       title: 'todolist',
       supportedLocales: const [
@@ -24,7 +24,7 @@ class App extends ConsumerWidget {
         GlobalCupertinoLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
       ],
-      themeMode: theme,
+      themeMode: themeMode,
       theme: ThemeData(
         useMaterial3: true,
         brightness: Brightness.light,
@@ -71,7 +71,7 @@ class App extends ConsumerWidget {
           },
         ),
       ),
-      home: SingleTouchContainer(
+      home: const SingleTouchContainer(
         child: Home(),
       ),
     );

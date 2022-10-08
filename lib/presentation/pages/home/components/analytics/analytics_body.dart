@@ -7,11 +7,11 @@ class AnalyticsBody extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final homeNavigation = ref.watch(homeNavigationProvider);
-    if (homeNavigation == NavigationItem.analytics) {
+    final homeScreen = ref.watch(homeNavigationProvider);
+    if (homeScreen == HomeScreen.analytics) {
       return Container();
     } else {
-      return Container();
+      return const SizedBox();
     }
   }
 }

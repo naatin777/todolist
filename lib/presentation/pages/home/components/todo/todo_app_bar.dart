@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todolist/presentation/providers/multi_select_provider.dart';
-import 'package:todolist/presentation/providers/todo_navigation_provider.dart';
+import 'package:todolist/presentation/providers/task_list_navigation_provider.dart';
 
 class TodoAppBar extends ConsumerWidget implements PreferredSizeWidget {
   const TodoAppBar({Key? key}) : super(key: key);
@@ -11,13 +11,13 @@ class TodoAppBar extends ConsumerWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final taskList = ref.watch(todoNavigationProvider);
+    final taskList = ref.watch(taskListNavigationProvider);
     final multiSelect = ref.watch(multiSelectProvider);
     if (multiSelect) {
       return AppBar(
         leading: IconButton(
           onPressed: () {
-            ref.read(multiSelectProvider.notifier).onDisable();
+            ref.read(multiSelectProvider.notifier).disable();
           },
           icon: const Icon(Icons.close),
         ),
@@ -31,8 +31,8 @@ class TodoAppBar extends ConsumerWidget implements PreferredSizeWidget {
             onSelected: (value) {
               if (value == "Delete") {
                 ref
-                    .read(todoNavigationProvider.notifier)
-                    .deleteTaskList(taskList);
+                    .read(taskListNavigationProvider.notifier)
+                    .removeTaskList(taskList);
               }
             },
             itemBuilder: (context) {

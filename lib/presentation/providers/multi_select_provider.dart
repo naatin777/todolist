@@ -3,9 +3,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class MultiSelectProvider extends StateNotifier<bool> {
   MultiSelectProvider() : super(false);
 
-  onSelect() => state = true;
+  void enable() {
+    state = true;
+  }
 
-  onDisable() => state = false;
+  void disable() {
+    state = false;
+  }
+
+  bool willPop() {
+    if (state) {
+      disable();
+      return false;
+    } else {
+      return true;
+    }
+  }
 }
 
 final multiSelectProvider =

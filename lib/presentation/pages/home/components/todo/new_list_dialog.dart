@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:todolist/presentation/providers/todo_navigation_provider.dart';
+import 'package:todolist/presentation/providers/task_list_navigation_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class NewListDialog extends ConsumerStatefulWidget {
   const NewListDialog({Key? key}) : super(key: key);
@@ -20,8 +21,9 @@ class _NewListDialogState extends ConsumerState<NewListDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = AppLocalizations.of(context);
     return AlertDialog(
-      title: const Text("Add new list"),
+      title: Text(appLocalizations!.add_new_list),
       content: TextField(
         controller: titleController,
         autofocus: true,
@@ -31,7 +33,7 @@ class _NewListDialogState extends ConsumerState<NewListDialog> {
         ),
         onSubmitted: (value) {
           ref
-              .read(todoNavigationProvider.notifier)
+              .read(taskListNavigationProvider.notifier)
               .addTaskList(titleController.text);
           Navigator.of(context).pop();
         },
@@ -47,7 +49,7 @@ class _NewListDialogState extends ConsumerState<NewListDialog> {
         TextButton(
           onPressed: () {
             ref
-                .read(todoNavigationProvider.notifier)
+                .read(taskListNavigationProvider.notifier)
                 .addTaskList(titleController.text);
             Navigator.of(context).pop();
           },

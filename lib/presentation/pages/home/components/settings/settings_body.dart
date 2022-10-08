@@ -8,8 +8,8 @@ class SettingsBody extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final homeNavigation = ref.watch(homeNavigationProvider);
-    if (homeNavigation == NavigationItem.settings) {
+    final homeScreen = ref.watch(homeNavigationProvider);
+    if (homeScreen == HomeScreen.settings) {
       final theme = ref.watch(themeProvider);
       return SingleChildScrollView(
         child: Column(
@@ -22,7 +22,7 @@ class SettingsBody extends ConsumerWidget {
                     value: e,
                     groupValue: theme,
                     onChanged: (value) {
-                      ref.read(themeProvider.notifier).changeTheme(e);
+                      ref.read(themeProvider.notifier).changeThemeMode(e);
                     },
                     title: Text(e.name),
                   );
@@ -33,7 +33,7 @@ class SettingsBody extends ConsumerWidget {
         ),
       );
     } else {
-      return Container();
+      return const SizedBox();
     }
   }
 }

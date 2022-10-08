@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todolist/constant.dart';
 import 'package:todolist/data/db/app_database.dart';
+import 'package:todolist/domain/models/add_new_task_model.dart';
 import 'package:todolist/presentation/providers/add_new_task_provider.dart';
-import 'package:todolist/presentation/providers/todo_navigation_provider.dart';
+import 'package:todolist/presentation/providers/task_list_navigation_provider.dart';
 
 class AddNewTask extends ConsumerStatefulWidget {
   const AddNewTask({super.key});
@@ -18,9 +19,6 @@ class _AddNewTaskState extends ConsumerState<AddNewTask> {
   @override
   void initState() {
     super.initState();
-    _titleController.addListener(() {
-      ref.read(addNewTaskProvider.notifier).changeTitle(_titleController.text);
-    });
   }
 
   @override
@@ -31,7 +29,7 @@ class _AddNewTaskState extends ConsumerState<AddNewTask> {
 
   @override
   Widget build(BuildContext context) {
-    final taskList = ref.watch(taskLists);
+    final taskLists = ref.watch(taskListsProvider);
     final list = ref.watch(addNewTaskProvider.select((value) => value.list));
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -55,9 +53,13 @@ class _AddNewTaskState extends ConsumerState<AddNewTask> {
                 style: const TextStyle(fontSize: 20),
                 autofocus: true,
                 autocorrect: false,
+                onChanged: (value) {
+                  ref.read(addNewTaskProvider.notifier).changeTitle(value);
+                },
                 onSubmitted: (value) {
-                  ref.read(addNewTaskProvider.notifier).addNewTask();
-                  _titleController.clear();
+                  ref
+                      .read(addNewTaskProvider.notifier)
+                      .addTask(_titleController);
                 },
                 onEditingComplete: () {
                   FocusScope.of(context).requestFocus();
@@ -66,24 +68,29 @@ class _AddNewTaskState extends ConsumerState<AddNewTask> {
             ),
             IconButton(
               onPressed: () {
-                ref.read(addNewTaskProvider.notifier).addNewTask();
-                _titleController.clear();
+                ref.read(addNewTaskProvider.notifier).addTask(_titleController);
               },
               icon: const Icon(Icons.send),
             )
           ],
         ),
-        taskList.when(
+        taskLists.when(
           data: (value) => DropdownButton<TaskList>(
             items: [
               DropdownMenuItem(
                 value: inbox,
-                child: Text(inbox.title),
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text(inbox.title),
+                ),
               ),
-              for (TaskList item in value)
+              for (TaskList taskList in value)
                 DropdownMenuItem(
-                  value: item,
-                  child: Text(item.title),
+                  value: taskList,
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Text(taskList.title),
+                  ),
                 ),
             ],
             value: list,
@@ -92,8 +99,8 @@ class _AddNewTaskState extends ConsumerState<AddNewTask> {
             },
             isExpanded: true,
           ),
-          error: (error, stackTrace) => Container(),
-          loading: () => Container(),
+          error: (error, stackTrace) => const SizedBox(),
+          loading: () => const SizedBox(),
         ),
         Padding(
           padding: EdgeInsets.only(
@@ -128,7 +135,9 @@ class _AddNewTaskState extends ConsumerState<AddNewTask> {
                     context: context,
                     initialTime: TimeOfDay.fromDateTime(now),
                   );
-                  ref.read(addNewTaskProvider).changeDateTime(date, time);
+                  // ref
+                  //     .read(addNewTaskProvider.notifier)
+                  //     .changeDateTime(date, time);
                 },
                 icon: const Icon(Icons.calendar_month),
               ),
@@ -214,7 +223,9 @@ class _SubTaskDialogState extends ConsumerState<SubTaskDialog> {
         TextField(
           controller: _titleController,
           onSubmitted: (value) {
-            ref.read(addNewTaskProvider).addSubtask(_titleController.text);
+            ref
+                .read(addNewTaskProvider.notifier)
+                .addSubtask(_titleController.text);
             _titleController.clear();
           },
         ),
@@ -223,7 +234,7 @@ class _SubTaskDialogState extends ConsumerState<SubTaskDialog> {
             title: Text(subTask[i]),
             trailing: IconButton(
               onPressed: () {
-                ref.read(addNewTaskProvider).removeSubtask(i);
+                ref.read(addNewTaskProvider.notifier).removeSubtask(i);
               },
               icon: const Icon(Icons.delete),
             ),

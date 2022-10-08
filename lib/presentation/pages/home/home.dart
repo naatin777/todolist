@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:todolist/presentation/providers/home_navigation_provider.dart';
 import 'package:todolist/presentation/pages/home/components/analytics/analytics_app_bar.dart';
 import 'package:todolist/presentation/pages/home/components/analytics/analytics_body.dart';
 import 'package:todolist/presentation/pages/home/components/search/search_app_bar.dart';
@@ -11,112 +10,109 @@ import 'package:todolist/presentation/pages/home/components/todo/todo_app_bar.da
 import 'package:todolist/presentation/pages/home/components/todo/todo_body.dart';
 import 'package:todolist/presentation/pages/home/components/todo/todo_fab.dart';
 import 'package:todolist/presentation/pages/home/components/todo/todo_drawer.dart';
+import 'package:todolist/presentation/providers/home_navigation_provider.dart';
 import 'package:todolist/presentation/providers/multi_select_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Home extends ConsumerWidget {
   const Home({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final homeNavigation = ref.watch(homeNavigationProvider);
-    final multiSelect = ref.watch(multiSelectProvider);
+    final homeScreen = ref.watch(homeNavigationProvider);
     return WillPopScope(
       child: Scaffold(
-        appBar: homeNavigation.appBar,
-        drawer: homeNavigation.drawer,
+        appBar: homeScreen.appBar,
+        drawer: homeScreen.drawer,
         body: Navigator(
           pages: [
-            if (NavigationItem.todo == homeNavigation)
+            if (HomeScreen.todo == homeScreen)
               const MaterialPage(
-                key: ValueKey(NavigationItem.todo),
+                key: ValueKey(HomeScreen.todo),
                 child: TodoBody(),
               ),
-            if (NavigationItem.search == homeNavigation)
+            if (HomeScreen.search == homeScreen)
               const MaterialPage(
-                key: ValueKey(NavigationItem.search),
+                key: ValueKey(HomeScreen.search),
                 child: SearchBody(),
               ),
-            if (NavigationItem.analytics == homeNavigation)
+            if (HomeScreen.analytics == homeScreen)
               const MaterialPage(
-                key: ValueKey(NavigationItem.analytics),
+                key: ValueKey(HomeScreen.analytics),
                 child: AnalyticsBody(),
               ),
-            if (NavigationItem.settings == homeNavigation)
+            if (HomeScreen.settings == homeScreen)
               const MaterialPage(
-                key: ValueKey(NavigationItem.settings),
+                key: ValueKey(HomeScreen.settings),
                 child: SettingsBody(),
               ),
           ],
           onPopPage: (route, result) => false,
         ),
-        floatingActionButton: homeNavigation.floatingActionButton,
+        floatingActionButton: homeScreen.floatingActionButton,
         bottomNavigationBar: NavigationBar(
-          selectedIndex: homeNavigation.index,
+          selectedIndex: homeScreen.index,
           onDestinationSelected: (int index) {
-            ref.read(homeNavigationProvider.notifier).changeNavigation(index);
+            ref.read(homeNavigationProvider.notifier).changeScreen(index);
           },
           destinations:
-              NavigationItem.values.map((e) => e.destination).toList(),
+              HomeScreen.values.map((e) => e.destination(context)).toList(),
         ),
       ),
       onWillPop: () async {
-        if (multiSelect) {
-          ref.read(multiSelectProvider.notifier).onDisable();
-          return false;
-        } else {
-          return true;
-        }
+        return ref.read(multiSelectProvider.notifier).willPop();
       },
     );
   }
 }
 
-extension on NavigationItem {
-  NavigationDestination get destination {
+extension on HomeScreen {
+  NavigationDestination destination(context) {
+    final appLocalizations = AppLocalizations.of(context);
     switch (this) {
-      case NavigationItem.todo:
-        return const NavigationDestination(
-          icon: Icon(Icons.check),
-          selectedIcon: Icon(Icons.check_outlined),
-          label: "Todo",
+      case HomeScreen.todo:
+        return NavigationDestination(
+          icon: const Icon(Icons.check),
+          selectedIcon: const Icon(Icons.check_outlined),
+          label: appLocalizations!.todo,
         );
-      case NavigationItem.search:
-        return const NavigationDestination(
-          icon: Icon(Icons.search),
-          selectedIcon: Icon(Icons.search_outlined),
-          label: "Search",
+      case HomeScreen.search:
+        return NavigationDestination(
+          icon: const Icon(Icons.search),
+          selectedIcon: const Icon(Icons.search_outlined),
+          label: appLocalizations!.search,
         );
-      case NavigationItem.analytics:
-        return const NavigationDestination(
-          icon: Icon(Icons.analytics),
-          selectedIcon: Icon(Icons.analytics_outlined),
-          label: "Analytics",
+      case HomeScreen.analytics:
+        return NavigationDestination(
+          icon: const Icon(Icons.analytics),
+          selectedIcon: const Icon(Icons.analytics_outlined),
+          label: appLocalizations!.analytics,
         );
-      case NavigationItem.settings:
-        return const NavigationDestination(
-          icon: Icon(Icons.settings),
-          selectedIcon: Icon(Icons.settings_outlined),
-          label: "Settings",
+      case HomeScreen.settings:
+        return NavigationDestination(
+          icon: const Icon(Icons.settings),
+          selectedIcon: const Icon(Icons.settings_outlined),
+          label: appLocalizations!.settings,
         );
     }
   }
 
   PreferredSizeWidget get appBar {
     switch (this) {
-      case NavigationItem.todo:
+      case HomeScreen.todo:
         return const TodoAppBar();
-      case NavigationItem.search:
+      case HomeScreen.search:
         return const SearchAppBar();
-      case NavigationItem.analytics:
+      case HomeScreen.analytics:
         return const AnalyticsAppBar();
-      case NavigationItem.settings:
+      case HomeScreen.settings:
         return const SettingsAppBar();
     }
   }
 
   Widget? get drawer {
     switch (this) {
-      case NavigationItem.todo:
+      case HomeScreen.todo:
         return const TodoDrawer();
       default:
         return null;
@@ -125,7 +121,7 @@ extension on NavigationItem {
 
   Widget? get floatingActionButton {
     switch (this) {
-      case NavigationItem.todo:
+      case HomeScreen.todo:
         return const TodoFab();
       default:
         return null;

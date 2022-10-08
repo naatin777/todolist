@@ -14,9 +14,9 @@ class SingleTouchContainer extends StatelessWidget {
     return RawGestureDetector(
       gestures: <Type, GestureRecognizerFactory>{
         _SingleTouchRecognizer:
-        GestureRecognizerFactoryWithHandlers<_SingleTouchRecognizer>(
+            GestureRecognizerFactoryWithHandlers<_SingleTouchRecognizer>(
           _SingleTouchRecognizer.new,
-              (_) {},
+          (_) {},
         ),
       },
       child: child,

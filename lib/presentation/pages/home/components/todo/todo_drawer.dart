@@ -2,45 +2,49 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todolist/constant.dart';
 import 'package:todolist/data/db/app_database.dart';
-import 'package:todolist/presentation/providers/todo_navigation_provider.dart';
+import 'package:todolist/presentation/providers/task_list_navigation_provider.dart';
 import 'package:todolist/presentation/pages/home/components/todo/new_list_dialog.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TodoDrawer extends ConsumerWidget {
   const TodoDrawer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final taskList = ref.watch(taskLists);
+    final taskLists = ref.watch(taskListsProvider);
+    final appLocalizations = AppLocalizations.of(context);
     return Drawer(
       child: SafeArea(
         child: ListView(
           children: [
             ListTile(
               leading: const Icon(Icons.today),
-              title: const Text("Today"),
+              title: Text(today.title),
               onTap: () {},
             ),
             ListTile(
               leading: const Icon(Icons.inbox),
               title: Text(inbox.title),
               onTap: () {
-                ref.read(todoNavigationProvider.notifier).changeTaskList(inbox);
+                ref
+                    .read(taskListNavigationProvider.notifier)
+                    .changeTaskList(inbox);
                 Navigator.of(context).pop();
               },
             ),
             const Divider(),
-            taskList.when(
+            taskLists.when(
               data: (data) {
                 return Column(
                   children: [
-                    for (TaskList list in data)
+                    for (TaskList taskList in data)
                       ListTile(
                         leading: const Icon(Icons.list),
-                        title: Text(list.title),
+                        title: Text(taskList.title),
                         onTap: () {
                           ref
-                              .read(todoNavigationProvider.notifier)
-                              .changeTaskList(list);
+                              .read(taskListNavigationProvider.notifier)
+                              .changeTaskList(taskList);
                           Navigator.of(context).pop();
                         },
                       ),
@@ -48,12 +52,12 @@ class TodoDrawer extends ConsumerWidget {
                   ],
                 );
               },
-              error: (error, stackTrace) => Container(),
-              loading: () => Container(),
+              error: (error, stackTrace) => const SizedBox(),
+              loading: () => const SizedBox(),
             ),
             ListTile(
               leading: const Icon(Icons.add),
-              title: const Text("Add new list"),
+              title: Text(appLocalizations!.add_new_list),
               onTap: () async {
                 await showDialog(
                   context: context,

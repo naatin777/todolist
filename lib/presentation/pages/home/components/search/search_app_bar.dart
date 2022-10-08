@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
   const SearchAppBar({Key? key}) : super(key: key);
@@ -8,12 +9,13 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appLocalizations = AppLocalizations.of(context);
     return Material(
       child: AppBar(
-        title: const TextField(
+        title: TextField(
           decoration: InputDecoration(
-            hintText: "Search",
-            prefixIcon: Icon(Icons.search),
+            hintText: appLocalizations!.search,
+            prefixIcon: const Icon(Icons.search),
             enabledBorder: InputBorder.none,
             focusedBorder: InputBorder.none,
           ),

@@ -1,91 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:todolist/constant.dart';
 import 'package:todolist/data/db/app_database.dart';
-import 'package:todolist/presentation/providers/todo_navigation_provider.dart';
+import 'package:todolist/data/repositories/task_repository_impl.dart';
+import 'package:todolist/domain/models/add_new_task_model.dart';
+import 'package:todolist/presentation/providers/task_list_navigation_provider.dart';
 
-class AddNewTaskProvider extends ChangeNotifier {
-  AddNewTaskProvider(this.ref) {
-    _list = ref.watch(todoNavigationProvider);
+class AddNewTaskProvider extends StateNotifier<AddNewTaskModel> {
+  AddNewTaskProvider(TaskList taskList)
+      : super(AddNewTaskModel(list: taskList));
+
+  final _taskRepository = TaskRepositoryImpl();
+
+  Future<void> addTask(TextEditingController controller) async {
+    await _taskRepository.addTask(state);
+    reset(controller);
   }
 
-  final Ref ref;
-
-  final _appDatabase = AppDatabase.getInstance();
-
-  String _title = "";
-
-  TaskList _list = inbox;
-
-  TaskList get list => _list;
-
-  Priority _priority = Priority.no;
-
-  Priority get priority => _priority;
-
-  DateTime? _dateTime;
-
-  final List<String> _subtask = [];
-
-  List<String> get subtask => _subtask;
-
-  changeTitle(String title) {
-    _title = title;
-    notifyListeners();
+  void reset(TextEditingController controller) {
+    controller.clear();
+    state = state.copyWith(title: "", description: "", subtask: []);
   }
 
-  changeList(TaskList taskList) {
-    _list = taskList;
-    notifyListeners();
+  void changeTitle(String title) {
+    state = state.copyWith(title: title);
   }
 
-  changePriority(Priority priority) {
-    _priority = priority;
-    notifyListeners();
+  void changeList(TaskList list) {
+    state = state.copyWith(list: list);
   }
 
-  changeDateTime(DateTime? dateTime, TimeOfDay? timeOfDay) {
-    if (dateTime != null) {
-      _dateTime = DateTime(
-        dateTime.year,
-        dateTime.month,
-        dateTime.day,
-        timeOfDay?.hour ?? dateTime.hour,
-        timeOfDay?.minute ?? dateTime.minute,
-      );
-    }
+  void changePriority(Priority priority) {
+    state = state.copyWith(priority: priority);
   }
 
-  addSubtask(String title) {
-    _subtask.add(title);
-    notifyListeners();
+  void addSubtask(String title) {
+    state = state.copyWith(subtask: state.subtask..add(title));
   }
 
-  removeSubtask(int index) {
-    _subtask.removeAt(index);
-    notifyListeners();
-  }
-
-  addNewTask() {
-    _appDatabase.tasksDao.insertTask(
-      list: _list.id,
-      title: _title,
-      check: false,
-      deadline: _dateTime,
-      subtask: _subtask.isEmpty
-          ? ""
-          : _subtask.reduce((value, element) => "$element,$value"),
-    );
+  void removeSubtask(int index) {
+    state = state.copyWith(subtask: state.subtask..removeAt(index));
   }
 }
 
-final addNewTaskProvider = ChangeNotifierProvider.autoDispose((ref) {
-  return AddNewTaskProvider(ref);
+final addNewTaskProvider =
+    StateNotifierProvider.autoDispose<AddNewTaskProvider, AddNewTaskModel>(
+        (ref) {
+  final taskList = ref.watch(taskListNavigationProvider);
+  return AddNewTaskProvider(taskList);
 });
-
-enum Priority {
-  high,
-  medium,
-  low,
-  no,
-}

@@ -72,9 +72,10 @@ class TaskListsCompanion extends UpdateCompanion<TaskList> {
     this.title = const Value.absent(),
   });
   TaskListsCompanion.insert({
-    this.id = const Value.absent(),
+    required String id,
     required String title,
-  }) : title = Value(title);
+  })  : id = Value(id),
+        title = Value(title);
   static Insertable<TaskList> custom({
     Expression<String>? id,
     Expression<String>? title,
@@ -124,9 +125,7 @@ class $TaskListsTable extends TaskLists
   @override
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
       'id', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      clientDefault: () => uuid.v4());
+      type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _titleMeta = const VerificationMeta('title');
   @override
   late final GeneratedColumn<String> title = GeneratedColumn<String>(
@@ -145,6 +144,8 @@ class $TaskListsTable extends TaskLists
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
     }
     if (data.containsKey('title')) {
       context.handle(
@@ -176,42 +177,50 @@ class $TaskListsTable extends TaskLists
 
 class Task extends DataClass implements Insertable<Task> {
   final String id;
-  final String list;
+  final String listId;
   final String title;
   final bool check;
+  final int priority;
   final DateTime? deadline;
   final String subtask;
+  final String description;
   const Task(
       {required this.id,
-      required this.list,
+      required this.listId,
       required this.title,
       required this.check,
+      required this.priority,
       this.deadline,
-      required this.subtask});
+      required this.subtask,
+      required this.description});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
-    map['list'] = Variable<String>(list);
+    map['list_id'] = Variable<String>(listId);
     map['title'] = Variable<String>(title);
     map['check'] = Variable<bool>(check);
+    map['priority'] = Variable<int>(priority);
     if (!nullToAbsent || deadline != null) {
       map['deadline'] = Variable<DateTime>(deadline);
     }
     map['subtask'] = Variable<String>(subtask);
+    map['description'] = Variable<String>(description);
     return map;
   }
 
   TasksCompanion toCompanion(bool nullToAbsent) {
     return TasksCompanion(
       id: Value(id),
-      list: Value(list),
+      listId: Value(listId),
       title: Value(title),
       check: Value(check),
+      priority: Value(priority),
       deadline: deadline == null && nullToAbsent
           ? const Value.absent()
           : Value(deadline),
       subtask: Value(subtask),
+      description: Value(description),
     );
   }
 
@@ -220,11 +229,13 @@ class Task extends DataClass implements Insertable<Task> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Task(
       id: serializer.fromJson<String>(json['id']),
-      list: serializer.fromJson<String>(json['list']),
+      listId: serializer.fromJson<String>(json['listId']),
       title: serializer.fromJson<String>(json['title']),
       check: serializer.fromJson<bool>(json['check']),
+      priority: serializer.fromJson<int>(json['priority']),
       deadline: serializer.fromJson<DateTime?>(json['deadline']),
       subtask: serializer.fromJson<String>(json['subtask']),
+      description: serializer.fromJson<String>(json['description']),
     );
   }
   @override
@@ -232,114 +243,142 @@ class Task extends DataClass implements Insertable<Task> {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
-      'list': serializer.toJson<String>(list),
+      'listId': serializer.toJson<String>(listId),
       'title': serializer.toJson<String>(title),
       'check': serializer.toJson<bool>(check),
+      'priority': serializer.toJson<int>(priority),
       'deadline': serializer.toJson<DateTime?>(deadline),
       'subtask': serializer.toJson<String>(subtask),
+      'description': serializer.toJson<String>(description),
     };
   }
 
   Task copyWith(
           {String? id,
-          String? list,
+          String? listId,
           String? title,
           bool? check,
+          int? priority,
           Value<DateTime?> deadline = const Value.absent(),
-          String? subtask}) =>
+          String? subtask,
+          String? description}) =>
       Task(
         id: id ?? this.id,
-        list: list ?? this.list,
+        listId: listId ?? this.listId,
         title: title ?? this.title,
         check: check ?? this.check,
+        priority: priority ?? this.priority,
         deadline: deadline.present ? deadline.value : this.deadline,
         subtask: subtask ?? this.subtask,
+        description: description ?? this.description,
       );
   @override
   String toString() {
     return (StringBuffer('Task(')
           ..write('id: $id, ')
-          ..write('list: $list, ')
+          ..write('listId: $listId, ')
           ..write('title: $title, ')
           ..write('check: $check, ')
+          ..write('priority: $priority, ')
           ..write('deadline: $deadline, ')
-          ..write('subtask: $subtask')
+          ..write('subtask: $subtask, ')
+          ..write('description: $description')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, list, title, check, deadline, subtask);
+  int get hashCode => Object.hash(
+      id, listId, title, check, priority, deadline, subtask, description);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is Task &&
           other.id == this.id &&
-          other.list == this.list &&
+          other.listId == this.listId &&
           other.title == this.title &&
           other.check == this.check &&
+          other.priority == this.priority &&
           other.deadline == this.deadline &&
-          other.subtask == this.subtask);
+          other.subtask == this.subtask &&
+          other.description == this.description);
 }
 
 class TasksCompanion extends UpdateCompanion<Task> {
   final Value<String> id;
-  final Value<String> list;
+  final Value<String> listId;
   final Value<String> title;
   final Value<bool> check;
+  final Value<int> priority;
   final Value<DateTime?> deadline;
   final Value<String> subtask;
+  final Value<String> description;
   const TasksCompanion({
     this.id = const Value.absent(),
-    this.list = const Value.absent(),
+    this.listId = const Value.absent(),
     this.title = const Value.absent(),
     this.check = const Value.absent(),
+    this.priority = const Value.absent(),
     this.deadline = const Value.absent(),
     this.subtask = const Value.absent(),
+    this.description = const Value.absent(),
   });
   TasksCompanion.insert({
-    this.id = const Value.absent(),
-    required String list,
+    required String id,
+    required String listId,
     required String title,
     required bool check,
+    required int priority,
     this.deadline = const Value.absent(),
     required String subtask,
-  })  : list = Value(list),
+    required String description,
+  })  : id = Value(id),
+        listId = Value(listId),
         title = Value(title),
         check = Value(check),
-        subtask = Value(subtask);
+        priority = Value(priority),
+        subtask = Value(subtask),
+        description = Value(description);
   static Insertable<Task> custom({
     Expression<String>? id,
-    Expression<String>? list,
+    Expression<String>? listId,
     Expression<String>? title,
     Expression<bool>? check,
+    Expression<int>? priority,
     Expression<DateTime>? deadline,
     Expression<String>? subtask,
+    Expression<String>? description,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
-      if (list != null) 'list': list,
+      if (listId != null) 'list_id': listId,
       if (title != null) 'title': title,
       if (check != null) 'check': check,
+      if (priority != null) 'priority': priority,
       if (deadline != null) 'deadline': deadline,
       if (subtask != null) 'subtask': subtask,
+      if (description != null) 'description': description,
     });
   }
 
   TasksCompanion copyWith(
       {Value<String>? id,
-      Value<String>? list,
+      Value<String>? listId,
       Value<String>? title,
       Value<bool>? check,
+      Value<int>? priority,
       Value<DateTime?>? deadline,
-      Value<String>? subtask}) {
+      Value<String>? subtask,
+      Value<String>? description}) {
     return TasksCompanion(
       id: id ?? this.id,
-      list: list ?? this.list,
+      listId: listId ?? this.listId,
       title: title ?? this.title,
       check: check ?? this.check,
+      priority: priority ?? this.priority,
       deadline: deadline ?? this.deadline,
       subtask: subtask ?? this.subtask,
+      description: description ?? this.description,
     );
   }
 
@@ -349,8 +388,8 @@ class TasksCompanion extends UpdateCompanion<Task> {
     if (id.present) {
       map['id'] = Variable<String>(id.value);
     }
-    if (list.present) {
-      map['list'] = Variable<String>(list.value);
+    if (listId.present) {
+      map['list_id'] = Variable<String>(listId.value);
     }
     if (title.present) {
       map['title'] = Variable<String>(title.value);
@@ -358,11 +397,17 @@ class TasksCompanion extends UpdateCompanion<Task> {
     if (check.present) {
       map['check'] = Variable<bool>(check.value);
     }
+    if (priority.present) {
+      map['priority'] = Variable<int>(priority.value);
+    }
     if (deadline.present) {
       map['deadline'] = Variable<DateTime>(deadline.value);
     }
     if (subtask.present) {
       map['subtask'] = Variable<String>(subtask.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
     }
     return map;
   }
@@ -371,11 +416,13 @@ class TasksCompanion extends UpdateCompanion<Task> {
   String toString() {
     return (StringBuffer('TasksCompanion(')
           ..write('id: $id, ')
-          ..write('list: $list, ')
+          ..write('listId: $listId, ')
           ..write('title: $title, ')
           ..write('check: $check, ')
+          ..write('priority: $priority, ')
           ..write('deadline: $deadline, ')
-          ..write('subtask: $subtask')
+          ..write('subtask: $subtask, ')
+          ..write('description: $description')
           ..write(')'))
         .toString();
   }
@@ -390,13 +437,11 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
   @override
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
       'id', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      clientDefault: () => uuid.v4());
-  final VerificationMeta _listMeta = const VerificationMeta('list');
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  final VerificationMeta _listIdMeta = const VerificationMeta('listId');
   @override
-  late final GeneratedColumn<String> list = GeneratedColumn<String>(
-      'list', aliasedName, false,
+  late final GeneratedColumn<String> listId = GeneratedColumn<String>(
+      'list_id', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
   final VerificationMeta _titleMeta = const VerificationMeta('title');
   @override
@@ -410,6 +455,11 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
       type: DriftSqlType.bool,
       requiredDuringInsert: true,
       defaultConstraints: 'CHECK ("check" IN (0, 1))');
+  final VerificationMeta _priorityMeta = const VerificationMeta('priority');
+  @override
+  late final GeneratedColumn<int> priority = GeneratedColumn<int>(
+      'priority', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
   final VerificationMeta _deadlineMeta = const VerificationMeta('deadline');
   @override
   late final GeneratedColumn<DateTime> deadline = GeneratedColumn<DateTime>(
@@ -420,9 +470,15 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
   late final GeneratedColumn<String> subtask = GeneratedColumn<String>(
       'subtask', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
+  final VerificationMeta _descriptionMeta =
+      const VerificationMeta('description');
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+      'description', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns =>
-      [id, list, title, check, deadline, subtask];
+      [id, listId, title, check, priority, deadline, subtask, description];
   @override
   String get aliasedName => _alias ?? 'tasks';
   @override
@@ -434,12 +490,14 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('list')) {
-      context.handle(
-          _listMeta, list.isAcceptableOrUnknown(data['list']!, _listMeta));
     } else if (isInserting) {
-      context.missing(_listMeta);
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('list_id')) {
+      context.handle(_listIdMeta,
+          listId.isAcceptableOrUnknown(data['list_id']!, _listIdMeta));
+    } else if (isInserting) {
+      context.missing(_listIdMeta);
     }
     if (data.containsKey('title')) {
       context.handle(
@@ -453,6 +511,12 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
     } else if (isInserting) {
       context.missing(_checkMeta);
     }
+    if (data.containsKey('priority')) {
+      context.handle(_priorityMeta,
+          priority.isAcceptableOrUnknown(data['priority']!, _priorityMeta));
+    } else if (isInserting) {
+      context.missing(_priorityMeta);
+    }
     if (data.containsKey('deadline')) {
       context.handle(_deadlineMeta,
           deadline.isAcceptableOrUnknown(data['deadline']!, _deadlineMeta));
@@ -462,6 +526,14 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
           subtask.isAcceptableOrUnknown(data['subtask']!, _subtaskMeta));
     } else if (isInserting) {
       context.missing(_subtaskMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+          _descriptionMeta,
+          description.isAcceptableOrUnknown(
+              data['description']!, _descriptionMeta));
+    } else if (isInserting) {
+      context.missing(_descriptionMeta);
     }
     return context;
   }
@@ -474,16 +546,20 @@ class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
     return Task(
       id: attachedDatabase.options.types
           .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      list: attachedDatabase.options.types
-          .read(DriftSqlType.string, data['${effectivePrefix}list'])!,
+      listId: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}list_id'])!,
       title: attachedDatabase.options.types
           .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
       check: attachedDatabase.options.types
           .read(DriftSqlType.bool, data['${effectivePrefix}check'])!,
+      priority: attachedDatabase.options.types
+          .read(DriftSqlType.int, data['${effectivePrefix}priority'])!,
       deadline: attachedDatabase.options.types
           .read(DriftSqlType.dateTime, data['${effectivePrefix}deadline']),
       subtask: attachedDatabase.options.types
           .read(DriftSqlType.string, data['${effectivePrefix}subtask'])!,
+      description: attachedDatabase.options.types
+          .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
     );
   }
 

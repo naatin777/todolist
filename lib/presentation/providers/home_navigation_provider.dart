@@ -1,19 +1,19 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomeNavigationProvider extends StateNotifier<NavigationItem> {
-  HomeNavigationProvider() : super(NavigationItem.todo);
+class HomeNavigationProvider extends StateNotifier<HomeScreen> {
+  HomeNavigationProvider() : super(HomeScreen.todo);
 
-  changeNavigation(int value) {
-    state = NavigationItem.values[value];
+  changeScreen(int value) {
+    state = HomeScreen.values[value];
   }
 }
 
 final homeNavigationProvider =
-    StateNotifierProvider<HomeNavigationProvider, NavigationItem>((ref) {
+    StateNotifierProvider<HomeNavigationProvider, HomeScreen>((ref) {
   return HomeNavigationProvider();
 });
 
-enum NavigationItem {
+enum HomeScreen {
   todo,
   search,
   analytics,
