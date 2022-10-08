@@ -15,7 +15,9 @@ import 'package:todolist/presentation/providers/multi_select_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Home extends ConsumerWidget {
-  const Home({Key? key}) : super(key: key);
+  Home({Key? key}) : super(key: key);
+
+  final _pageController = PageController();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -24,36 +26,23 @@ class Home extends ConsumerWidget {
       child: Scaffold(
         appBar: homeScreen.appBar,
         drawer: homeScreen.drawer,
-        body: Navigator(
-          pages: [
-            if (HomeScreen.todo == homeScreen)
-              const MaterialPage(
-                key: ValueKey(HomeScreen.todo),
-                child: TodoBody(),
-              ),
-            if (HomeScreen.search == homeScreen)
-              const MaterialPage(
-                key: ValueKey(HomeScreen.search),
-                child: SearchBody(),
-              ),
-            if (HomeScreen.analytics == homeScreen)
-              const MaterialPage(
-                key: ValueKey(HomeScreen.analytics),
-                child: AnalyticsBody(),
-              ),
-            if (HomeScreen.settings == homeScreen)
-              const MaterialPage(
-                key: ValueKey(HomeScreen.settings),
-                child: SettingsBody(),
-              ),
-          ],
-          onPopPage: (route, result) => false,
+        body: PageView(
+          controller: _pageController,
+          physics: const NeverScrollableScrollPhysics(),
+          onPageChanged: (value) {
+            ref.read(homeNavigationProvider.notifier).changeScreen(value);
+          },
+          children: HomeScreen.values.map((e) => e.body).toList(),
         ),
         floatingActionButton: homeScreen.floatingActionButton,
         bottomNavigationBar: NavigationBar(
           selectedIndex: homeScreen.index,
           onDestinationSelected: (int index) {
-            ref.read(homeNavigationProvider.notifier).changeScreen(index);
+            _pageController.animateToPage(
+              index,
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeOut,
+            );
           },
           destinations:
               HomeScreen.values.map((e) => e.destination(context)).toList(),
@@ -107,6 +96,19 @@ extension on HomeScreen {
         return const AnalyticsAppBar();
       case HomeScreen.settings:
         return const SettingsAppBar();
+    }
+  }
+
+  Widget get body {
+    switch (this) {
+      case HomeScreen.todo:
+        return const TodoBody();
+      case HomeScreen.search:
+        return const SearchBody();
+      case HomeScreen.analytics:
+        return const AnalyticsBody();
+      case HomeScreen.settings:
+        return const SettingsBody();
     }
   }
 

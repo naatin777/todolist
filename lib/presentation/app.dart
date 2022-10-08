@@ -71,7 +71,7 @@ class App extends ConsumerWidget {
           },
         ),
       ),
-      home: const SingleTouchContainer(
+      home: SingleTouchContainer(
         child: Home(),
       ),
     );
