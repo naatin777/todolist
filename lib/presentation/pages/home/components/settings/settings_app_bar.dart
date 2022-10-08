@@ -11,7 +11,7 @@ class SettingsAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final appLocalizations = AppLocalizations.of(context);
     return AppBar(
-      title: Text(appLocalizations!.search),
+      title: Text(appLocalizations!.settings),
     );
   }
 }

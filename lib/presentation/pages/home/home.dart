@@ -22,6 +22,7 @@ class Home extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final homeScreen = ref.watch(homeNavigationProvider);
+    final multiSelect = ref.watch(multiSelectProvider);
     return WillPopScope(
       child: Scaffold(
         appBar: homeScreen.appBar,
@@ -34,19 +35,23 @@ class Home extends ConsumerWidget {
           },
           children: HomeScreen.values.map((e) => e.body).toList(),
         ),
-        floatingActionButton: homeScreen.floatingActionButton,
-        bottomNavigationBar: NavigationBar(
-          selectedIndex: homeScreen.index,
-          onDestinationSelected: (int index) {
-            _pageController.animateToPage(
-              index,
-              duration: const Duration(milliseconds: 200),
-              curve: Curves.easeOut,
-            );
-          },
-          destinations:
-              HomeScreen.values.map((e) => e.destination(context)).toList(),
-        ),
+        floatingActionButton:
+            multiSelect ? null : homeScreen.floatingActionButton,
+        bottomNavigationBar: multiSelect
+            ? null
+            : NavigationBar(
+                selectedIndex: homeScreen.index,
+                onDestinationSelected: (int index) {
+                  _pageController.animateToPage(
+                    index,
+                    duration: const Duration(milliseconds: 200),
+                    curve: Curves.easeInOutCubic,
+                  );
+                },
+                destinations: HomeScreen.values
+                    .map((e) => e.destination(context))
+                    .toList(),
+              ),
       ),
       onWillPop: () async {
         return ref.read(multiSelectProvider.notifier).willPop();
