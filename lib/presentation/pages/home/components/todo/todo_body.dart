@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:todolist/data/db/app_database.dart';
 import 'package:todolist/presentation/providers/multi_select_provider.dart';
 import 'package:todolist/presentation/providers/todo_body_provider.dart';
 import 'package:todolist/presentation/providers/task_list_navigation_provider.dart';
@@ -12,10 +13,11 @@ class TodoBody extends ConsumerWidget {
     final taskList = ref.watch(taskListNavigationProvider);
     final tasks = ref.watch(tasksProvider(taskList));
     final multiSelect = ref.watch(multiSelectProvider);
+    final select = ref.watch(multiSelectProvider);
     return tasks.when(
       data: (data) => CustomScrollView(
         slivers: [
-          if (multiSelect)
+          if (multiSelect.isSelect)
             SliverAppBar(
               forceElevated: true,
               pinned: true,
@@ -25,6 +27,7 @@ class TodoBody extends ConsumerWidget {
                 },
                 icon: const Icon(Icons.close),
               ),
+              title: Text(select.item.length.toString()),
             )
           else
             SliverAppBar(
@@ -56,63 +59,11 @@ class TodoBody extends ConsumerWidget {
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
-                return Dismissible(
-                  key: Key(data[index].id),
-                  background: Container(color: Colors.blue),
-                  secondaryBackground: Container(color: Colors.red),
-                  onDismissed: (direction) {
-                    ref.read(todoBodyProvider).removeTask(data[index]);
-                  },
-                  child: ListTile(
-                    // shape: data[index].check
-                    //     ? RoundedRectangleBorder(
-                    //         side: BorderSide(
-                    //             color: Theme.of(context).colorScheme.primary,
-                    //             width: 0),
-                    //         borderRadius: BorderRadius.circular(20),
-                    //       )
-                    //     : null,
-                    leading: Transform.scale(
-                      scale: 1.1,
-                      child: Checkbox(
-                        value: data[index].check,
-                        onChanged: (value) {
-                          ref
-                              .read(todoBodyProvider)
-                              .changeTaskCheck(data[index], value);
-                        },
-                        activeColor: Colors.transparent,
-                      ),
-                    ),
-                    title: Text(
-                      data[index].title,
-                      style: TextStyle(
-                        decoration: data[index].check
-                            ? TextDecoration.lineThrough
-                            : TextDecoration.none,
-                      ),
-                    ),
-                    subtitle: Text(
-                      data[index].description,
-                      style: TextStyle(
-                          decoration: data[index].check
-                              ? TextDecoration.lineThrough
-                              : TextDecoration.none),
-                    ),
-                    onTap: () {},
-                    onLongPress: () {
-                      ref.read(multiSelectProvider.notifier).enable();
-                    },
-                    selected: true,
-                    selectedColor:
-                        Theme.of(context).colorScheme.onSurfaceVariant,
-                    selectedTileColor: data[index].check
-                        ? Theme.of(context).colorScheme.surfaceVariant
-                        : null,
-                    horizontalTitleGap: 0,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-                  ),
-                );
+                if (multiSelect.isSelect) {
+                  return MultiListTile(task: data[index]);
+                } else {
+                  return SingleListTile(task: data[index]);
+                }
               },
               childCount: data.length,
             ),
@@ -121,6 +72,109 @@ class TodoBody extends ConsumerWidget {
       ),
       error: (error, stackTrace) => const SizedBox(),
       loading: () => const SizedBox(),
+    );
+  }
+}
+
+class MultiListTile extends ConsumerWidget {
+  const MultiListTile({super.key, required this.task});
+
+  final Task task;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final select = ref.watch(multiSelectProvider.select((value) => value.item));
+    return ListTile(
+      key: Key(task.id),
+      leading: Transform.scale(
+        scale: 1.1,
+        child: Checkbox(
+          value: task.check,
+          onChanged: (value) {
+            ref.read(todoBodyProvider.notifier).changeTaskCheck(task, value);
+          },
+          activeColor: Colors.transparent,
+        ),
+      ),
+      title: Text(
+        task.title,
+        style: TextStyle(
+          decoration:
+              task.check ? TextDecoration.lineThrough : TextDecoration.none,
+        ),
+      ),
+      subtitle: task.description.isEmpty
+          ? null
+          : Text(
+              task.description,
+              style: TextStyle(
+                decoration: task.check
+                    ? TextDecoration.lineThrough
+                    : TextDecoration.none,
+              ),
+            ),
+      onTap: () {
+        ref.read(multiSelectProvider.notifier).selectTask(task.id);
+      },
+      selected: select.contains(task.id),
+      selectedColor: Theme.of(context).colorScheme.onSurfaceVariant,
+      selectedTileColor: Theme.of(context).colorScheme.surfaceVariant,
+      horizontalTitleGap: 0,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+    );
+  }
+}
+
+class SingleListTile extends ConsumerWidget {
+  const SingleListTile({super.key, required this.task});
+
+  final Task task;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Dismissible(
+      key: Key(task.id),
+      background: Container(color: Colors.blue),
+      secondaryBackground: Container(color: Colors.red),
+      onDismissed: (direction) {
+        ref.read(todoBodyProvider.notifier).removeTask(task);
+      },
+      child: ListTile(
+        leading: Transform.scale(
+          scale: 1.1,
+          child: Checkbox(
+            value: task.check,
+            onChanged: (value) {
+              ref.read(todoBodyProvider.notifier).changeTaskCheck(task, value);
+            },
+            activeColor: Colors.transparent,
+          ),
+        ),
+        title: Text(
+          task.title,
+          style: TextStyle(
+            decoration:
+                task.check ? TextDecoration.lineThrough : TextDecoration.none,
+          ),
+        ),
+        subtitle: task.description.isEmpty
+            ? null
+            : Text(
+                task.description,
+                style: TextStyle(
+                  decoration: task.check
+                      ? TextDecoration.lineThrough
+                      : TextDecoration.none,
+                ),
+              ),
+        onTap: () {},
+        onLongPress: () {
+          ref.read(multiSelectProvider.notifier).enable();
+          ref.read(multiSelectProvider.notifier).selectTask(task.id);
+        },
+        horizontalTitleGap: 0,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+      ),
     );
   }
 }

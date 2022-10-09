@@ -35,8 +35,8 @@ class Home extends ConsumerWidget {
           children: HomeScreen.values.map((e) => e.body).toList(),
         ),
         floatingActionButton:
-            multiSelect ? null : homeScreen.floatingActionButton,
-        bottomNavigationBar: multiSelect
+            multiSelect.isSelect ? null : homeScreen.floatingActionButton,
+        bottomNavigationBar: multiSelect.isSelect
             ? null
             : NavigationBar(
                 selectedIndex: homeScreen.index,
