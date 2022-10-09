@@ -6,7 +6,6 @@ import 'package:todolist/presentation/pages/home/components/search/search_app_ba
 import 'package:todolist/presentation/pages/home/components/search/search_body.dart';
 import 'package:todolist/presentation/pages/home/components/settings/settings_app_bar.dart';
 import 'package:todolist/presentation/pages/home/components/settings/settings_body.dart';
-import 'package:todolist/presentation/pages/home/components/todo/todo_app_bar.dart';
 import 'package:todolist/presentation/pages/home/components/todo/todo_body.dart';
 import 'package:todolist/presentation/pages/home/components/todo/todo_fab.dart';
 import 'package:todolist/presentation/pages/home/components/todo/todo_drawer.dart';
@@ -91,10 +90,10 @@ extension on HomeScreen {
     }
   }
 
-  PreferredSizeWidget get appBar {
+  PreferredSizeWidget? get appBar {
     switch (this) {
       case HomeScreen.todo:
-        return const TodoAppBar();
+        return null;
       case HomeScreen.search:
         return const SearchAppBar();
       case HomeScreen.analytics:

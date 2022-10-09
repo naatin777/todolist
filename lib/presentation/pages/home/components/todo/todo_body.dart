@@ -10,61 +10,118 @@ class TodoBody extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final homeScreen = ref.watch(homeNavigationProvider);
-    if (homeScreen == HomeScreen.todo) {
-      final taskList = ref.watch(taskListNavigationProvider);
-      final tasks = ref.watch(tasksProvider(taskList));
-      return tasks.when(
-        data: (data) => ListView.builder(
-          itemCount: data.length,
-          itemBuilder: (context, index) {
-            return Dismissible(
-              key: Key(data[index].id),
-              background: Container(color: Colors.blue),
-              secondaryBackground: Container(color: Colors.red),
-              onDismissed: (direction) {
-                ref.read(todoBodyProvider).removeTask(data[index]);
-              },
-              child: ListTile(
-                leading: Checkbox(
-                  value: data[index].check,
-                  onChanged: (value) {
-                    ref
-                        .read(todoBodyProvider)
-                        .changeTaskCheck(data[index], value);
-                  },
-                  activeColor: Colors.transparent,
-                ),
-                title: Text(
-                  data[index].title,
-                  style: TextStyle(
-                    decoration: data[index].check
-                        ? TextDecoration.lineThrough
-                        : TextDecoration.none,
-                  ),
-                ),
-                subtitle: Text(
-                  data[index].description,
-                  style: TextStyle(
-                      decoration: data[index].check
-                          ? TextDecoration.lineThrough
-                          : TextDecoration.none),
-                ),
-                onTap: () {},
-                onLongPress: () {
-                  ref.read(multiSelectProvider.notifier).enable();
+    final taskList = ref.watch(taskListNavigationProvider);
+    final tasks = ref.watch(tasksProvider(taskList));
+    final multiSelect = ref.watch(multiSelectProvider);
+    return tasks.when(
+      data: (data) => CustomScrollView(
+        slivers: [
+          if (multiSelect)
+            SliverAppBar(
+              forceElevated: true,
+              pinned: true,
+              leading: IconButton(
+                onPressed: () {
+                  ref.read(multiSelectProvider.notifier).disable();
                 },
-                horizontalTitleGap: 0,
-                contentPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                icon: const Icon(Icons.close),
               ),
-            );
-          },
-        ),
-        error: (error, stackTrace) => const SizedBox(),
-        loading: () => const SizedBox(),
-      );
-    } else {
-      return const SizedBox();
-    }
+            )
+          else
+            SliverAppBar(
+              floating: true,
+              centerTitle: true,
+              title: Text(taskList.title),
+              actions: [
+                PopupMenuButton<String>(
+                  onSelected: (value) {
+                    if (value == "Delete") {
+                      ref
+                          .read(taskListNavigationProvider.notifier)
+                          .removeTaskList(taskList);
+                    }
+                  },
+                  itemBuilder: (context) {
+                    return ["Delete"]
+                        .map(
+                          (e) => PopupMenuItem(
+                            value: e,
+                            child: Text(e),
+                          ),
+                        )
+                        .toList();
+                  },
+                ),
+              ],
+            ),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                return Dismissible(
+                  key: Key(data[index].id),
+                  background: Container(color: Colors.blue),
+                  secondaryBackground: Container(color: Colors.red),
+                  onDismissed: (direction) {
+                    ref.read(todoBodyProvider).removeTask(data[index]);
+                  },
+                  child: ListTile(
+                    // shape: data[index].check
+                    //     ? RoundedRectangleBorder(
+                    //         side: BorderSide(
+                    //             color: Theme.of(context).colorScheme.primary,
+                    //             width: 0),
+                    //         borderRadius: BorderRadius.circular(20),
+                    //       )
+                    //     : null,
+                    leading: Transform.scale(
+                      scale: 1.1,
+                      child: Checkbox(
+                        value: data[index].check,
+                        onChanged: (value) {
+                          ref
+                              .read(todoBodyProvider)
+                              .changeTaskCheck(data[index], value);
+                        },
+                        activeColor: Colors.transparent,
+                      ),
+                    ),
+                    title: Text(
+                      data[index].title,
+                      style: TextStyle(
+                        decoration: data[index].check
+                            ? TextDecoration.lineThrough
+                            : TextDecoration.none,
+                      ),
+                    ),
+                    subtitle: Text(
+                      data[index].description,
+                      style: TextStyle(
+                          decoration: data[index].check
+                              ? TextDecoration.lineThrough
+                              : TextDecoration.none),
+                    ),
+                    onTap: () {},
+                    onLongPress: () {
+                      ref.read(multiSelectProvider.notifier).enable();
+                    },
+                    selected: true,
+                    selectedColor:
+                        Theme.of(context).colorScheme.onSurfaceVariant,
+                    selectedTileColor: data[index].check
+                        ? Theme.of(context).colorScheme.surfaceVariant
+                        : null,
+                    horizontalTitleGap: 0,
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+                  ),
+                );
+              },
+              childCount: data.length,
+            ),
+          )
+        ],
+      ),
+      error: (error, stackTrace) => const SizedBox(),
+      loading: () => const SizedBox(),
+    );
   }
 }
