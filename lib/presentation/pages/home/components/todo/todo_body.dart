@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todolist/data/db/app_database.dart';
+import 'package:todolist/presentation/providers/app_navigation_provider.dart';
 import 'package:todolist/presentation/providers/multi_select_provider.dart';
 import 'package:todolist/presentation/providers/todo_body_provider.dart';
 import 'package:todolist/presentation/providers/task_list_navigation_provider.dart';
@@ -167,7 +168,9 @@ class SingleListTile extends ConsumerWidget {
                       : TextDecoration.none,
                 ),
               ),
-        onTap: () {},
+        onTap: () {
+          ref.read(appNavigationProvider.notifier).jumpToId(task.id);
+        },
         onLongPress: () {
           ref.read(multiSelectProvider.notifier).enable();
           ref.read(multiSelectProvider.notifier).selectTask(task.id);

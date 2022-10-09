@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:todolist/presentation/pages/detail/detail.dart';
+import 'package:todolist/presentation/providers/app_navigation_provider.dart';
+import 'package:todolist/presentation/providers/home_navigation_provider.dart';
 import 'package:todolist/presentation/widgets/single_touch_container.dart';
 import 'package:todolist/presentation/pages/home/home.dart';
 import 'package:todolist/presentation/providers/theme_provider.dart';
@@ -12,6 +15,7 @@ class App extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeProvider);
+    final appNavigation = ref.watch(appNavigationProvider);
     return MaterialApp(
       title: 'todolist',
       supportedLocales: const [
@@ -72,7 +76,26 @@ class App extends ConsumerWidget {
         ),
       ),
       home: SingleTouchContainer(
-        child: Home(),
+        child: Navigator(
+          pages: [
+            MaterialPage(
+              key: const ValueKey("home"),
+              child: Home(),
+            ),
+            if (appNavigation != null)
+              MaterialPage(
+                child: Detail(id: appNavigation),
+              ),
+          ],
+          onPopPage: (route, result) {
+            if (!route.didPop(result)) {
+              return false;
+            }
+
+            ref.read(appNavigationProvider.notifier).jumpToHome();
+            return true;
+          },
+        ),
       ),
     );
   }
