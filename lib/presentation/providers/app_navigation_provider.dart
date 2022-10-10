@@ -1,10 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:todolist/data/db/app_database.dart';
 
-class AppNavigationProvider extends StateNotifier<String?> {
+class AppNavigationProvider extends StateNotifier<Task?> {
   AppNavigationProvider() : super(null);
 
-  jumpToId(String id) {
-    state = id;
+  jumpToTask(Task task) {
+    state = task;
   }
 
   jumpToHome() {
@@ -13,6 +14,6 @@ class AppNavigationProvider extends StateNotifier<String?> {
 }
 
 final appNavigationProvider =
-    StateNotifierProvider<AppNavigationProvider, String?>((ref) {
+    StateNotifierProvider<AppNavigationProvider, Task?>((ref) {
   return AppNavigationProvider();
 });

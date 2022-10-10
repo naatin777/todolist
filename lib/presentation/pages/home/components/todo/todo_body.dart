@@ -169,7 +169,7 @@ class SingleListTile extends ConsumerWidget {
                 ),
               ),
         onTap: () {
-          ref.read(appNavigationProvider.notifier).jumpToId(task.id);
+          ref.read(appNavigationProvider.notifier).jumpToTask(task);
         },
         onLongPress: () {
           ref.read(multiSelectProvider.notifier).enable();

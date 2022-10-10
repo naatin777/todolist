@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:todolist/data/db/app_database.dart';
 
 class Detail extends StatelessWidget {
-  const Detail({super.key, required this.id});
+  const Detail({super.key, required this.task});
 
-  final String id;
+  final Task task;
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,7 @@ class Detail extends StatelessWidget {
             Navigator.pop(context);
           },
         ),
-        title: Text(id),
+        title: Text(task.title),
       ),
     );
   }
