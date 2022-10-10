@@ -22,23 +22,15 @@ class Home extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final homeScreen = ref.watch(homeNavigationProvider);
     final multiSelect = ref.watch(multiSelectProvider);
+    final size = MediaQuery.of(context).size;
     return WillPopScope(
       child: Scaffold(
         appBar: homeScreen.appBar,
         drawer: homeScreen.drawer,
-        body: PageView(
-          controller: _pageController,
-          physics: const NeverScrollableScrollPhysics(),
-          onPageChanged: (value) {
-            ref.read(homeNavigationProvider.notifier).changeScreen(value);
-          },
-          children: HomeScreen.values.map((e) => e.body).toList(),
-        ),
-        floatingActionButton:
-            multiSelect.isSelect ? null : homeScreen.floatingActionButton,
-        bottomNavigationBar: multiSelect.isSelect
-            ? null
-            : NavigationBar(
+        body: Row(
+          children: [
+            if (size.width / size.height >= 1)
+              NavigationRail(
                 selectedIndex: homeScreen.index,
                 onDestinationSelected: (int index) {
                   _pageController.animateToPage(
@@ -48,9 +40,39 @@ class Home extends ConsumerWidget {
                   );
                 },
                 destinations: HomeScreen.values
-                    .map((e) => e.destination(context))
+                    .map((e) => e.railDestination(context))
                     .toList(),
               ),
+            Expanded(
+              child: PageView(
+                controller: _pageController,
+                physics: const NeverScrollableScrollPhysics(),
+                onPageChanged: (value) {
+                  ref.read(homeNavigationProvider.notifier).changeScreen(value);
+                },
+                children: HomeScreen.values.map((e) => e.body).toList(),
+              ),
+            ),
+          ],
+        ),
+        floatingActionButton:
+            multiSelect.isSelect ? null : homeScreen.floatingActionButton,
+        bottomNavigationBar:
+            multiSelect.isSelect || size.width / size.height > 1
+                ? null
+                : NavigationBar(
+                    selectedIndex: homeScreen.index,
+                    onDestinationSelected: (int index) {
+                      _pageController.animateToPage(
+                        index,
+                        duration: const Duration(milliseconds: 200),
+                        curve: Curves.easeInOutCubic,
+                      );
+                    },
+                    destinations: HomeScreen.values
+                        .map((e) => e.destination(context))
+                        .toList(),
+                  ),
       ),
       onWillPop: () async {
         return ref.read(multiSelectProvider.notifier).willPop();
@@ -86,6 +108,36 @@ extension on HomeScreen {
           icon: const Icon(Icons.settings),
           selectedIcon: const Icon(Icons.settings_outlined),
           label: appLocalizations!.settings,
+        );
+    }
+  }
+
+  NavigationRailDestination railDestination(context) {
+    final appLocalizations = AppLocalizations.of(context);
+    switch (this) {
+      case HomeScreen.todo:
+        return NavigationRailDestination(
+          icon: const Icon(Icons.check),
+          selectedIcon: const Icon(Icons.check_outlined),
+          label: Text(appLocalizations!.todo),
+        );
+      case HomeScreen.search:
+        return NavigationRailDestination(
+          icon: const Icon(Icons.search),
+          selectedIcon: const Icon(Icons.search_outlined),
+          label: Text(appLocalizations!.search),
+        );
+      case HomeScreen.analytics:
+        return NavigationRailDestination(
+          icon: const Icon(Icons.analytics),
+          selectedIcon: const Icon(Icons.analytics_outlined),
+          label: Text(appLocalizations!.analytics),
+        );
+      case HomeScreen.settings:
+        return NavigationRailDestination(
+          icon: const Icon(Icons.settings),
+          selectedIcon: const Icon(Icons.settings_outlined),
+          label: Text(appLocalizations!.settings),
         );
     }
   }
