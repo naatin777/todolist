@@ -1,21 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:todolist/constant.dart';
 import 'package:todolist/presentation/pages/detail/detail.dart';
-import 'package:todolist/presentation/providers/app_navigation_provider.dart';
-import 'package:todolist/presentation/widgets/single_touch_container.dart';
 import 'package:todolist/presentation/pages/home/home.dart';
 import 'package:todolist/presentation/providers/theme_provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class App extends ConsumerWidget {
-  const App({super.key});
+  App({super.key});
+
+  final _router = GoRouter(
+    routes: [
+      GoRoute(
+        name: "home",
+        path: "/",
+        pageBuilder: (context, state) {
+          return MaterialPage<void>(
+            key: state.pageKey,
+            child: Home(),
+          );
+        },
+      ),
+      GoRoute(
+        name: "detail",
+        path: "/detail/:id",
+        pageBuilder: (context, state) {
+          String taskId = state.params["id"] ?? inbox.id;
+          return MaterialPage<void>(
+            key: state.pageKey,
+            child: Detail(
+              taskId: taskId,
+            ),
+          );
+        },
+      ),
+    ],
+  );
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeProvider);
-    final task = ref.watch(appNavigationProvider);
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'todolist',
       supportedLocales: const [
         Locale('en', ''),
@@ -74,30 +101,9 @@ class App extends ConsumerWidget {
           },
         ),
       ),
-      home: SingleTouchContainer(
-        child: Navigator(
-          pages: [
-            MaterialPage(
-              key: const ValueKey("home"),
-              child: Home(),
-            ),
-            if (task != null)
-              MaterialPage(
-                child: Detail(task: task),
-              ),
-          ],
-          onPopPage: (route, result) {
-            if (!route.didPop(result)) {
-              print("object");
-              return false;
-            } else {
-              print("objec2t");
-              ref.read(appNavigationProvider.notifier).jumpToHome();
-              return true;
-            }
-          },
-        ),
-      ),
+      routerDelegate: _router.routerDelegate,
+      routeInformationParser: _router.routeInformationParser,
+      routeInformationProvider: _router.routeInformationProvider,
     );
   }
 }

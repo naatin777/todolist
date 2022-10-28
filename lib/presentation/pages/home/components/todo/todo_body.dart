@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:todolist/data/db/app_database.dart';
 import 'package:todolist/presentation/providers/app_navigation_provider.dart';
 import 'package:todolist/presentation/providers/multi_select_provider.dart';
@@ -169,7 +170,7 @@ class SingleListTile extends ConsumerWidget {
                 ),
               ),
         onTap: () {
-          ref.read(appNavigationProvider.notifier).jumpToTask(task);
+          GoRouter.of(context).push("/detail/${task.id}");
         },
         onLongPress: () {
           ref.read(multiSelectProvider.notifier).enable();

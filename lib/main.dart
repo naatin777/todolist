@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todolist/presentation/app.dart';
 import 'package:todolist/presentation/providers/theme_provider.dart';
 import 'package:todolist/presentation/providers/task_list_navigation_provider.dart';
+import 'package:todolist/presentation/widgets/single_touch_container.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,7 +26,9 @@ Future<void> main() async {
           ),
         ),
       ],
-      child: const App(),
+      child: SingleTouchContainer(
+        child: App(),
+      ),
     ),
   );
 }
