@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:todolist/data/db/app_database.dart';
+import 'package:todolist/presentation/pages/home/components/todo/todo_app_bar.dart';
 import 'package:todolist/presentation/providers/app_navigation_provider.dart';
 import 'package:todolist/presentation/providers/multi_select_provider.dart';
 import 'package:todolist/presentation/providers/todo_body_provider.dart';
@@ -15,49 +16,10 @@ class TodoBody extends ConsumerWidget {
     final taskList = ref.watch(taskListNavigationProvider);
     final tasks = ref.watch(tasksProvider(taskList));
     final multiSelect = ref.watch(multiSelectProvider);
-    final select = ref.watch(multiSelectProvider);
     return tasks.when(
       data: (data) => CustomScrollView(
         slivers: [
-          if (multiSelect.isSelect)
-            SliverAppBar(
-              forceElevated: true,
-              pinned: true,
-              leading: IconButton(
-                onPressed: () {
-                  ref.read(multiSelectProvider.notifier).disable();
-                },
-                icon: const Icon(Icons.close),
-              ),
-              title: Text(select.item.length.toString()),
-            )
-          else
-            SliverAppBar(
-              floating: true,
-              centerTitle: true,
-              title: Text(taskList.title),
-              actions: [
-                PopupMenuButton<String>(
-                  onSelected: (value) {
-                    if (value == "Delete") {
-                      ref
-                          .read(taskListNavigationProvider.notifier)
-                          .removeTaskList(taskList);
-                    }
-                  },
-                  itemBuilder: (context) {
-                    return ["Delete"]
-                        .map(
-                          (e) => PopupMenuItem(
-                            value: e,
-                            child: Text(e),
-                          ),
-                        )
-                        .toList();
-                  },
-                ),
-              ],
-            ),
+          TodoAppBar(),
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {

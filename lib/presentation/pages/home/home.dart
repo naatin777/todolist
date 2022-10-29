@@ -19,40 +19,24 @@ class Home extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final appLocalizations = AppLocalizations.of(context);
     final homeScreen = ref.watch(homeNavigationProvider);
     final multiSelect = ref.watch(multiSelectProvider);
-    final size = MediaQuery.of(context).size;
-
     return WillPopScope(
       child: Scaffold(
-        appBar: homeScreen.appBar,
         drawer: homeScreen.drawer,
-        body: PageView(
-          physics: const NeverScrollableScrollPhysics(),
-          controller: pageController,
-          children: HomeScreen.values.map((e) => e.body).toList(),
-          onPageChanged: (value) {
-            ref.read(homeNavigationProvider.notifier).changeScreen(value);
-          },
-        ),
+        body: homeScreen.body,
         floatingActionButton:
             multiSelect.isSelect ? null : homeScreen.floatingActionButton,
-        bottomNavigationBar: multiSelect.isSelect ||
-                size.width / size.height > 1
-            ? null
-            : NavigationBar(
-                selectedIndex: homeScreen.index,
-                onDestinationSelected: (int index) {
-                  pageController.animateToPage(
-                    index,
-                    duration: const Duration(milliseconds: 100),
-                    curve: Curves.easeInOut,
-                  );
-                },
-                destinations: HomeScreen.values
-                    .map((e) => e.destination(context))
-                    .toList(),
-              ),
+        bottomNavigationBar: NavigationBar(
+          selectedIndex: homeScreen.index,
+          onDestinationSelected: (int index) {
+            ref.read(homeNavigationProvider.notifier).changeScreen(index);
+          },
+          destinations: HomeScreen.values
+              .map((e) => e.destination(appLocalizations))
+              .toList(),
+        ),
       ),
       onWillPop: () async {
         return ref.read(multiSelectProvider.notifier).willPop();
@@ -62,8 +46,7 @@ class Home extends ConsumerWidget {
 }
 
 extension on HomeScreen {
-  NavigationDestination destination(context) {
-    final appLocalizations = AppLocalizations.of(context);
+  NavigationDestination destination(AppLocalizations? appLocalizations) {
     switch (this) {
       case HomeScreen.todo:
         return NavigationDestination(
@@ -92,8 +75,8 @@ extension on HomeScreen {
     }
   }
 
-  NavigationRailDestination railDestination(context) {
-    final appLocalizations = AppLocalizations.of(context);
+  NavigationRailDestination railDestination(
+      AppLocalizations? appLocalizations) {
     switch (this) {
       case HomeScreen.todo:
         return NavigationRailDestination(

@@ -10,7 +10,7 @@ class SettingsAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final appLocalizations = AppLocalizations.of(context);
-    return AppBar(
+    return SliverAppBar(
       title: Text(appLocalizations!.settings),
     );
   }

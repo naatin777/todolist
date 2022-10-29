@@ -10,15 +10,13 @@ class SearchAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final appLocalizations = AppLocalizations.of(context);
-    return Material(
-      child: AppBar(
-        title: TextField(
-          decoration: InputDecoration(
-            hintText: appLocalizations!.search,
-            prefixIcon: const Icon(Icons.search),
-            enabledBorder: InputBorder.none,
-            focusedBorder: InputBorder.none,
-          ),
+    return SliverAppBar(
+      title: TextField(
+        decoration: InputDecoration(
+          hintText: appLocalizations!.search,
+          prefixIcon: const Icon(Icons.search),
+          enabledBorder: InputBorder.none,
+          focusedBorder: InputBorder.none,
         ),
       ),
     );
