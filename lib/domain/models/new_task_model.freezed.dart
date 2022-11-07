@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target
 
-part of 'add_new_task_model.dart';
+part of 'new_task_model.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -15,159 +15,161 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
-mixin _$AddNewTaskModel {
-  TaskList get list => throw _privateConstructorUsedError;
+mixin _$NewTaskModel {
+  String get listId => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   Priority get priority => throw _privateConstructorUsedError;
   DateTime? get deadline => throw _privateConstructorUsedError;
   List<String> get subtask => throw _privateConstructorUsedError;
-  String get description => throw _privateConstructorUsedError;
+  String? get description => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
-  $AddNewTaskModelCopyWith<AddNewTaskModel> get copyWith =>
+  $NewTaskModelCopyWith<NewTaskModel> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $AddNewTaskModelCopyWith<$Res> {
-  factory $AddNewTaskModelCopyWith(
-          AddNewTaskModel value, $Res Function(AddNewTaskModel) then) =
-      _$AddNewTaskModelCopyWithImpl<$Res>;
+abstract class $NewTaskModelCopyWith<$Res> {
+  factory $NewTaskModelCopyWith(
+          NewTaskModel value, $Res Function(NewTaskModel) then) =
+      _$NewTaskModelCopyWithImpl<$Res, NewTaskModel>;
+  @useResult
   $Res call(
-      {TaskList list,
+      {String listId,
       String title,
       Priority priority,
       DateTime? deadline,
       List<String> subtask,
-      String description});
+      String? description});
 }
 
 /// @nodoc
-class _$AddNewTaskModelCopyWithImpl<$Res>
-    implements $AddNewTaskModelCopyWith<$Res> {
-  _$AddNewTaskModelCopyWithImpl(this._value, this._then);
+class _$NewTaskModelCopyWithImpl<$Res, $Val extends NewTaskModel>
+    implements $NewTaskModelCopyWith<$Res> {
+  _$NewTaskModelCopyWithImpl(this._value, this._then);
 
-  final AddNewTaskModel _value;
   // ignore: unused_field
-  final $Res Function(AddNewTaskModel) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? list = freezed,
-    Object? title = freezed,
-    Object? priority = freezed,
+    Object? listId = null,
+    Object? title = null,
+    Object? priority = null,
     Object? deadline = freezed,
-    Object? subtask = freezed,
+    Object? subtask = null,
     Object? description = freezed,
   }) {
     return _then(_value.copyWith(
-      list: list == freezed
-          ? _value.list
-          : list // ignore: cast_nullable_to_non_nullable
-              as TaskList,
-      title: title == freezed
+      listId: null == listId
+          ? _value.listId
+          : listId // ignore: cast_nullable_to_non_nullable
+              as String,
+      title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
-      priority: priority == freezed
+      priority: null == priority
           ? _value.priority
           : priority // ignore: cast_nullable_to_non_nullable
               as Priority,
-      deadline: deadline == freezed
+      deadline: freezed == deadline
           ? _value.deadline
           : deadline // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      subtask: subtask == freezed
+      subtask: null == subtask
           ? _value.subtask
           : subtask // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      description: description == freezed
+      description: freezed == description
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+              as String?,
+    ) as $Val);
   }
 }
 
 /// @nodoc
-abstract class _$$_AddNewTaskModelCopyWith<$Res>
-    implements $AddNewTaskModelCopyWith<$Res> {
-  factory _$$_AddNewTaskModelCopyWith(
-          _$_AddNewTaskModel value, $Res Function(_$_AddNewTaskModel) then) =
-      __$$_AddNewTaskModelCopyWithImpl<$Res>;
+abstract class _$$_NewTaskModelCopyWith<$Res>
+    implements $NewTaskModelCopyWith<$Res> {
+  factory _$$_NewTaskModelCopyWith(
+          _$_NewTaskModel value, $Res Function(_$_NewTaskModel) then) =
+      __$$_NewTaskModelCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call(
-      {TaskList list,
+      {String listId,
       String title,
       Priority priority,
       DateTime? deadline,
       List<String> subtask,
-      String description});
+      String? description});
 }
 
 /// @nodoc
-class __$$_AddNewTaskModelCopyWithImpl<$Res>
-    extends _$AddNewTaskModelCopyWithImpl<$Res>
-    implements _$$_AddNewTaskModelCopyWith<$Res> {
-  __$$_AddNewTaskModelCopyWithImpl(
-      _$_AddNewTaskModel _value, $Res Function(_$_AddNewTaskModel) _then)
-      : super(_value, (v) => _then(v as _$_AddNewTaskModel));
+class __$$_NewTaskModelCopyWithImpl<$Res>
+    extends _$NewTaskModelCopyWithImpl<$Res, _$_NewTaskModel>
+    implements _$$_NewTaskModelCopyWith<$Res> {
+  __$$_NewTaskModelCopyWithImpl(
+      _$_NewTaskModel _value, $Res Function(_$_NewTaskModel) _then)
+      : super(_value, _then);
 
-  @override
-  _$_AddNewTaskModel get _value => super._value as _$_AddNewTaskModel;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? list = freezed,
-    Object? title = freezed,
-    Object? priority = freezed,
+    Object? listId = null,
+    Object? title = null,
+    Object? priority = null,
     Object? deadline = freezed,
-    Object? subtask = freezed,
+    Object? subtask = null,
     Object? description = freezed,
   }) {
-    return _then(_$_AddNewTaskModel(
-      list: list == freezed
-          ? _value.list
-          : list // ignore: cast_nullable_to_non_nullable
-              as TaskList,
-      title: title == freezed
+    return _then(_$_NewTaskModel(
+      listId: null == listId
+          ? _value.listId
+          : listId // ignore: cast_nullable_to_non_nullable
+              as String,
+      title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
-      priority: priority == freezed
+      priority: null == priority
           ? _value.priority
           : priority // ignore: cast_nullable_to_non_nullable
               as Priority,
-      deadline: deadline == freezed
+      deadline: freezed == deadline
           ? _value.deadline
           : deadline // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      subtask: subtask == freezed
+      subtask: null == subtask
           ? _value._subtask
           : subtask // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      description: description == freezed
+      description: freezed == description
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
     ));
   }
 }
 
 /// @nodoc
 
-class _$_AddNewTaskModel implements _AddNewTaskModel {
-  const _$_AddNewTaskModel(
-      {required this.list,
+class _$_NewTaskModel implements _NewTaskModel {
+  const _$_NewTaskModel(
+      {required this.listId,
       this.title = "",
       this.priority = Priority.no,
       this.deadline,
       final List<String> subtask = const [],
-      this.description = ""})
+      this.description})
       : _subtask = subtask;
 
   @override
-  final TaskList list;
+  final String listId;
   @override
   @JsonKey()
   final String title;
@@ -185,55 +187,51 @@ class _$_AddNewTaskModel implements _AddNewTaskModel {
   }
 
   @override
-  @JsonKey()
-  final String description;
+  final String? description;
 
   @override
   String toString() {
-    return 'AddNewTaskModel(list: $list, title: $title, priority: $priority, deadline: $deadline, subtask: $subtask, description: $description)';
+    return 'NewTaskModel(listId: $listId, title: $title, priority: $priority, deadline: $deadline, subtask: $subtask, description: $description)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_AddNewTaskModel &&
-            const DeepCollectionEquality().equals(other.list, list) &&
-            const DeepCollectionEquality().equals(other.title, title) &&
-            const DeepCollectionEquality().equals(other.priority, priority) &&
-            const DeepCollectionEquality().equals(other.deadline, deadline) &&
+            other is _$_NewTaskModel &&
+            (identical(other.listId, listId) || other.listId == listId) &&
+            (identical(other.title, title) || other.title == title) &&
+            (identical(other.priority, priority) ||
+                other.priority == priority) &&
+            (identical(other.deadline, deadline) ||
+                other.deadline == deadline) &&
             const DeepCollectionEquality().equals(other._subtask, _subtask) &&
-            const DeepCollectionEquality()
-                .equals(other.description, description));
+            (identical(other.description, description) ||
+                other.description == description));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(list),
-      const DeepCollectionEquality().hash(title),
-      const DeepCollectionEquality().hash(priority),
-      const DeepCollectionEquality().hash(deadline),
-      const DeepCollectionEquality().hash(_subtask),
-      const DeepCollectionEquality().hash(description));
+  int get hashCode => Object.hash(runtimeType, listId, title, priority,
+      deadline, const DeepCollectionEquality().hash(_subtask), description);
 
   @JsonKey(ignore: true)
   @override
-  _$$_AddNewTaskModelCopyWith<_$_AddNewTaskModel> get copyWith =>
-      __$$_AddNewTaskModelCopyWithImpl<_$_AddNewTaskModel>(this, _$identity);
+  @pragma('vm:prefer-inline')
+  _$$_NewTaskModelCopyWith<_$_NewTaskModel> get copyWith =>
+      __$$_NewTaskModelCopyWithImpl<_$_NewTaskModel>(this, _$identity);
 }
 
-abstract class _AddNewTaskModel implements AddNewTaskModel {
-  const factory _AddNewTaskModel(
-      {required final TaskList list,
+abstract class _NewTaskModel implements NewTaskModel {
+  const factory _NewTaskModel(
+      {required final String listId,
       final String title,
       final Priority priority,
       final DateTime? deadline,
       final List<String> subtask,
-      final String description}) = _$_AddNewTaskModel;
+      final String? description}) = _$_NewTaskModel;
 
   @override
-  TaskList get list;
+  String get listId;
   @override
   String get title;
   @override
@@ -243,9 +241,9 @@ abstract class _AddNewTaskModel implements AddNewTaskModel {
   @override
   List<String> get subtask;
   @override
-  String get description;
+  String? get description;
   @override
   @JsonKey(ignore: true)
-  _$$_AddNewTaskModelCopyWith<_$_AddNewTaskModel> get copyWith =>
+  _$$_NewTaskModelCopyWith<_$_NewTaskModel> get copyWith =>
       throw _privateConstructorUsedError;
 }

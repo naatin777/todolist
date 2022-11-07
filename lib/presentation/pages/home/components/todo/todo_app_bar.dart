@@ -1,53 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todolist/presentation/providers/multi_select_provider.dart';
-import 'package:todolist/presentation/providers/task_list_navigation_provider.dart';
-import 'package:todolist/presentation/providers/todo_body_provider.dart';
+import 'package:todolist/presentation/providers/task_list_provider.dart';
 
 class TodoAppBar extends ConsumerWidget {
-  const TodoAppBar({Key? key}) : super(key: key);
+  const TodoAppBar({Key? key, required this.listId}) : super(key: key);
+  final String listId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final taskList = ref.watch(taskListNavigationProvider);
     final multiSelect = ref.watch(multiSelectProvider);
-    if (multiSelect.isSelect) {
-      return SliverAppBar(
-        forceElevated: true,
-        pinned: true,
-        leading: IconButton(
-          onPressed: () {
-            ref.read(multiSelectProvider.notifier).disable();
-          },
-          icon: const Icon(Icons.close),
-        ),
-        title: Text(multiSelect.item.length.toString()),
-      );
-    } else {
-      return SliverAppBar(
-        floating: true,
-        centerTitle: true,
-        title: Text(taskList.title),
-        actions: [
-          PopupMenuButton<String>(
-            onSelected: (value) {
-              if (value == "Delete") {
-                ref
-                    .read(taskListNavigationProvider.notifier)
-                    .removeTaskList(taskList);
-              }
-            },
-            itemBuilder: (context) {
-              return ["Delete"]
-                  .map((e) => PopupMenuItem(
-                        value: e,
-                        child: Text(e),
-                      ))
-                  .toList();
-            },
-          ),
-        ],
-      );
-    }
+    final taskList = ref.watch(taskListFutureProvider(listId));
+    return taskList.when(
+      data: (data) => multiSelect.isSelect
+          ? SliverAppBar(
+              forceElevated: true,
+              pinned: true,
+              leading: IconButton(
+                onPressed: () {
+                  ref.read(multiSelectProvider.notifier).disable();
+                },
+                icon: const Icon(Icons.close),
+              ),
+              title: Text(multiSelect.item.length.toString()),
+            )
+          : SliverAppBar(
+              floating: true,
+              //  centerTitle: true,
+              title: Text(data.title),
+              actions: [
+                PopupMenuButton<String>(
+                  onSelected: (value) {
+                    if (value == "Delete") {
+                      ref.read(taskListProvider).removeTaskList(listId);
+                    }
+                  },
+                  itemBuilder: (context) {
+                    return ["Delete"]
+                        .map((e) => PopupMenuItem(
+                              value: e,
+                              child: Text(e),
+                            ))
+                        .toList();
+                  },
+                ),
+              ],
+            ),
+      error: (error, stackTrace) => const SliverAppBar(),
+      loading: () => const SliverAppBar(),
+    );
   }
 }

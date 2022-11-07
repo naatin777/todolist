@@ -7,10 +7,8 @@ class AnalyticsBody extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return CustomScrollView(
-      slivers: [
-        AnalyticsAppBar()
-      ],
+    return const CustomScrollView(
+      slivers: [AnalyticsAppBar()],
     );
   }
 }

@@ -8,6 +8,15 @@ class TaskListRepositoryImpl extends TaskListRepository {
   final _uuid = const Uuid();
 
   @override
+  Future<List<TaskList>> getAllTaskLists() async {
+    try {
+      return await _taskListsDao.selectAll();
+    } catch (e) {
+      return [];
+    }
+  }
+
+  @override
   Future<TaskList> getTaskList(String id) async {
     try {
       return await _taskListsDao.selectFromId(id);
@@ -17,17 +26,28 @@ class TaskListRepositoryImpl extends TaskListRepository {
   }
 
   @override
-  Future<void> addTaskList({required String title}) async {
-    await _taskListsDao.insert(id: _uuid.v4(), title: title);
-  }
-
-  @override
-  Future<void> removeTaskList({required TaskList taskList}) async {
-    await _taskListsDao.deleteFromId(taskList.id);
-  }
-
-  @override
   Stream<List<TaskList>> watchAllTaskLists() {
     return _taskListsDao.watchAll();
+  }
+
+  @override
+  Stream<TaskList> watchTaskList(String id) {
+    return _taskListsDao.watchFromId(id);
+  }
+
+  @override
+  Future<void> addTaskList(String title) async {
+    final taskList = TaskList(id: _uuid.v4(), title: title);
+    await _taskListsDao.insertTaskList(taskList);
+  }
+
+  @override
+  Future<void> updateTaskList(TaskList taskList) async {
+    await _taskListsDao.updateTaskList(taskList);
+  }
+
+  @override
+  Future<void> removeTaskList(String id) async {
+    await _taskListsDao.deleteTaskList(id);
   }
 }

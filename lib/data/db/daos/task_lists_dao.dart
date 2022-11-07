@@ -9,21 +9,32 @@ class TaskListsDao extends DatabaseAccessor<AppDatabase>
     with _$TaskListsDaoMixin {
   TaskListsDao(AppDatabase db) : super(db);
 
+  Future<List<TaskList>> selectAll() {
+    return select(taskLists).get();
+  }
+
   Future<TaskList> selectFromId(String id) {
     return (select(taskLists)..where((tbl) => tbl.id.equals(id))).getSingle();
   }
 
-  Future<int> insert({required String id, required String title}) {
-    return into(taskLists).insert(
-      TaskListsCompanion(id: Value(id), title: Value(title)),
-    );
-  }
-
-  Future<int> deleteFromId(String id) {
-    return (delete(taskLists)..where((tbl) => tbl.id.equals(id))).go();
-  }
-
   Stream<List<TaskList>> watchAll() {
     return select(taskLists).watch();
+  }
+
+  Stream<TaskList> watchFromId(String id) {
+    return (select(taskLists)..where((tbl) => tbl.id.equals(id))).watchSingle();
+  }
+
+  Future<int> insertTaskList(TaskList taskList) {
+    return into(taskLists).insert(taskList.toCompanion(true));
+  }
+
+  Future<int> updateTaskList(TaskList taskList) {
+    return (update(taskLists)..where((tbl) => tbl.id.equals(taskList.id)))
+        .write(taskList.toCompanion(true));
+  }
+
+  Future<int> deleteTaskList(String id) {
+    return (delete(taskLists)..where((tbl) => tbl.id.equals(id))).go();
   }
 }

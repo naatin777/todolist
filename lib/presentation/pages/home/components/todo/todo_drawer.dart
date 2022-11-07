@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:todolist/constant.dart';
 import 'package:todolist/data/db/app_database.dart';
-import 'package:todolist/presentation/providers/task_list_navigation_provider.dart';
 import 'package:todolist/presentation/pages/home/components/todo/new_list_dialog.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:todolist/presentation/providers/task_list_provider.dart';
 
 class TodoDrawer extends ConsumerWidget {
   const TodoDrawer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final taskLists = ref.watch(taskListsProvider);
+    final taskLists = ref.watch(taskListsStreamProvider);
     final appLocalizations = AppLocalizations.of(context);
     return Drawer(
       child: SafeArea(
@@ -26,9 +27,7 @@ class TodoDrawer extends ConsumerWidget {
               leading: const Icon(Icons.inbox),
               title: Text(inbox.title),
               onTap: () {
-                ref
-                    .read(taskListNavigationProvider.notifier)
-                    .changeTaskList(inbox);
+                GoRouter.of(context).go("/todo?id=${inbox.id}");
                 Navigator.of(context).pop();
               },
             ),
@@ -42,9 +41,7 @@ class TodoDrawer extends ConsumerWidget {
                         leading: const Icon(Icons.list),
                         title: Text(taskList.title),
                         onTap: () {
-                          ref
-                              .read(taskListNavigationProvider.notifier)
-                              .changeTaskList(taskList);
+                          GoRouter.of(context).go("/todo?id=${taskList.id}");
                           Navigator.of(context).pop();
                         },
                       ),

@@ -12,21 +12,19 @@ Future<void> main() async {
     const SystemUiOverlayStyle(systemNavigationBarColor: Colors.transparent),
   );
   await SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  final themeMode = await ThemeProvider.initialize();
+  final taskList = await TaskListNavigationProvider.initialize();
   runApp(
     ProviderScope(
       overrides: [
         themeProvider.overrideWithProvider(
-          themeProviderFamily(
-            await ThemeProvider.initialize(),
-          ),
+          themeProviderFamily(themeMode),
         ),
         taskListNavigationProvider.overrideWithProvider(
-          taskListNavigationProviderFamily(
-            await TaskListNavigationProvider.initialize(),
-          ),
+          taskListNavigationProviderFamily(taskList),
         ),
       ],
-      child: SingleTouchContainer(
+      child: const SingleTouchContainer(
         child: App(),
       ),
     ),

@@ -7,10 +7,8 @@ class SearchBody extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return CustomScrollView(
-      slivers: [
-        SearchAppBar()
-      ],
+    return const CustomScrollView(
+      slivers: [SearchAppBar()],
     );
   }
 }

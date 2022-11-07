@@ -1,37 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:todolist/presentation/pages/home/components/analytics/analytics_app_bar.dart';
+import 'package:go_router/go_router.dart';
 import 'package:todolist/presentation/pages/home/components/analytics/analytics_body.dart';
-import 'package:todolist/presentation/pages/home/components/search/search_app_bar.dart';
 import 'package:todolist/presentation/pages/home/components/search/search_body.dart';
-import 'package:todolist/presentation/pages/home/components/settings/settings_app_bar.dart';
 import 'package:todolist/presentation/pages/home/components/settings/settings_body.dart';
 import 'package:todolist/presentation/pages/home/components/todo/todo_body.dart';
 import 'package:todolist/presentation/pages/home/components/todo/todo_fab.dart';
 import 'package:todolist/presentation/pages/home/components/todo/todo_drawer.dart';
-import 'package:todolist/presentation/providers/home_navigation_provider.dart';
 import 'package:todolist/presentation/providers/multi_select_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class Home extends ConsumerWidget {
-  Home({Key? key}) : super(key: key);
-  final pageController = PageController();
+class Home extends ConsumerStatefulWidget {
+  const Home({
+    Key? key,
+    required this.homeScreen,
+    required this.taskListId,
+  }) : super(key: key);
+  final HomeScreen homeScreen;
+  final String taskListId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<Home> createState() => _HomeState();
+}
+
+class _HomeState extends ConsumerState<Home> {
+  late String taskListId = widget.taskListId;
+
+  @override
+  Widget build(BuildContext context) {
     final appLocalizations = AppLocalizations.of(context);
-    final homeScreen = ref.watch(homeNavigationProvider);
     final multiSelect = ref.watch(multiSelectProvider);
+    final homeScreen = widget.homeScreen;
+
+    taskListId = widget.taskListId;
     return WillPopScope(
       child: Scaffold(
         drawer: homeScreen.drawer,
-        body: homeScreen.body,
+        body: homeScreen.body(taskListId),
         floatingActionButton:
             multiSelect.isSelect ? null : homeScreen.floatingActionButton,
         bottomNavigationBar: NavigationBar(
           selectedIndex: homeScreen.index,
           onDestinationSelected: (int index) {
-            ref.read(homeNavigationProvider.notifier).changeScreen(index);
+            GoRouter.of(context).go(
+                "/${HomeScreen.values[index].name}?id=${widget.taskListId}");
           },
           destinations: HomeScreen.values
               .map((e) => e.destination(appLocalizations))
@@ -43,6 +55,13 @@ class Home extends ConsumerWidget {
       },
     );
   }
+}
+
+enum HomeScreen {
+  todo,
+  search,
+  analytics,
+  settings,
 }
 
 extension on HomeScreen {
@@ -105,23 +124,10 @@ extension on HomeScreen {
     }
   }
 
-  PreferredSizeWidget? get appBar {
+  Widget body(String listId) {
     switch (this) {
       case HomeScreen.todo:
-        return null;
-      case HomeScreen.search:
-        return const SearchAppBar();
-      case HomeScreen.analytics:
-        return const AnalyticsAppBar();
-      case HomeScreen.settings:
-        return const SettingsAppBar();
-    }
-  }
-
-  Widget get body {
-    switch (this) {
-      case HomeScreen.todo:
-        return const TodoBody();
+        return TodoBody(listId: listId);
       case HomeScreen.search:
         return const SearchBody();
       case HomeScreen.analytics:

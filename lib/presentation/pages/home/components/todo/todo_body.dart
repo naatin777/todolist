@@ -3,23 +3,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:todolist/data/db/app_database.dart';
 import 'package:todolist/presentation/pages/home/components/todo/todo_app_bar.dart';
-import 'package:todolist/presentation/providers/app_navigation_provider.dart';
 import 'package:todolist/presentation/providers/multi_select_provider.dart';
-import 'package:todolist/presentation/providers/todo_body_provider.dart';
-import 'package:todolist/presentation/providers/task_list_navigation_provider.dart';
+import 'package:todolist/presentation/providers/task_provider.dart';
 
 class TodoBody extends ConsumerWidget {
-  const TodoBody({Key? key}) : super(key: key);
+  const TodoBody({Key? key, required this.listId}) : super(key: key);
+  final String listId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final taskList = ref.watch(taskListNavigationProvider);
-    final tasks = ref.watch(tasksProvider(taskList));
+    final tasks = ref.watch(tasksStreamProvider(listId));
     final multiSelect = ref.watch(multiSelectProvider);
     return tasks.when(
       data: (data) => CustomScrollView(
         slivers: [
-          TodoAppBar(),
+          TodoAppBar(
+            listId: listId,
+          ),
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
@@ -55,7 +55,7 @@ class MultiListTile extends ConsumerWidget {
         child: Checkbox(
           value: task.check,
           onChanged: (value) {
-            ref.read(todoBodyProvider.notifier).changeTaskCheck(task, value);
+            ref.read(taskProvider).updateTask(task.copyWith(check: value));
           },
           activeColor: Colors.transparent,
         ),
@@ -67,10 +67,10 @@ class MultiListTile extends ConsumerWidget {
               task.check ? TextDecoration.lineThrough : TextDecoration.none,
         ),
       ),
-      subtitle: task.description.isEmpty
+      subtitle: task.description == null
           ? null
           : Text(
-              task.description,
+              task.description!,
               style: TextStyle(
                 decoration: task.check
                     ? TextDecoration.lineThrough
@@ -101,7 +101,7 @@ class SingleListTile extends ConsumerWidget {
       background: Container(color: Colors.blue),
       secondaryBackground: Container(color: Colors.red),
       onDismissed: (direction) {
-        ref.read(todoBodyProvider.notifier).removeTask(task);
+        ref.read(taskProvider).removeTask(task.id);
       },
       child: ListTile(
         leading: Transform.scale(
@@ -109,7 +109,7 @@ class SingleListTile extends ConsumerWidget {
           child: Checkbox(
             value: task.check,
             onChanged: (value) {
-              ref.read(todoBodyProvider.notifier).changeTaskCheck(task, value);
+              ref.read(taskProvider).updateTask(task.copyWith(check: value));
             },
             activeColor: Colors.transparent,
           ),
@@ -121,10 +121,10 @@ class SingleListTile extends ConsumerWidget {
                 task.check ? TextDecoration.lineThrough : TextDecoration.none,
           ),
         ),
-        subtitle: task.description.isEmpty
+        subtitle: task.description == null
             ? null
             : Text(
-                task.description,
+                task.description!,
                 style: TextStyle(
                   decoration: task.check
                       ? TextDecoration.lineThrough

@@ -5,7 +5,7 @@ import 'package:todolist/data/repositories/current_list_repository_impl.dart';
 import 'package:todolist/data/repositories/task_list_repository_impl.dart';
 
 class TaskListNavigationProvider extends StateNotifier<TaskList> {
-  TaskListNavigationProvider(TaskList taskList) : super(taskList);
+  TaskListNavigationProvider({required TaskList taskList}) : super(taskList);
 
   final _currentListRepository = CurrentListRepositoryImpl();
   final _taskListRepository = TaskListRepositoryImpl();
@@ -18,30 +18,21 @@ class TaskListNavigationProvider extends StateNotifier<TaskList> {
     return currentList;
   }
 
-  Future<void> changeTaskList(TaskList taskList) async {
-    await _currentListRepository.setCurrentList(taskList);
-    state = taskList;
-  }
-
-  Future<void> addTaskList(String title) async {
-    await _taskListRepository.addTaskList(title: title);
-  }
-
-  Future<void> removeTaskList(TaskList taskList) async {
-    _taskListRepository.removeTaskList(taskList: taskList);
-    await changeTaskList(inbox);
+  Future<void> changeTaskListFromId(String taskList) async {
+    if (state.id != taskList) {
+      try {
+        state = (await _taskListRepository.getTaskList(taskList));
+      } catch (e) {
+        state = inbox;
+      }
+      _currentListRepository.setCurrentList(state);
+    }
   }
 }
 
-final taskListsProvider = StreamProvider((ref) {
-  final taskListRepository = TaskListRepositoryImpl();
-  return taskListRepository.watchAllTaskLists();
-});
-
-final taskListNavigationProviderFamily =
-    StateNotifierProvider.family<TaskListNavigationProvider, TaskList, TaskList>(
-        (ref, arg) {
-  return TaskListNavigationProvider(arg);
+final taskListNavigationProviderFamily = StateNotifierProvider.family<
+    TaskListNavigationProvider, TaskList, TaskList>((ref, arg) {
+  return TaskListNavigationProvider(taskList: arg);
 });
 
 final taskListNavigationProvider =

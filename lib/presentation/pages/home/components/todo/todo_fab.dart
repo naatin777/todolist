@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todolist/presentation/pages/home/components/todo/add_new_task.dart';
+import 'package:todolist/presentation/pages/home/components/todo/new_task.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TodoFab extends StatelessWidget {
@@ -29,7 +29,7 @@ class TodoFab extends StatelessWidget {
                   right: 8,
                   bottom: viewInsets.bottom,
                 ),
-                child: const AddNewTask(),
+                child: const NewTask(),
               ),
             );
           },

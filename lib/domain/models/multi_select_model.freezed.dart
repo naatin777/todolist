@@ -28,34 +28,37 @@ mixin _$MultiSelectModel {
 abstract class $MultiSelectModelCopyWith<$Res> {
   factory $MultiSelectModelCopyWith(
           MultiSelectModel value, $Res Function(MultiSelectModel) then) =
-      _$MultiSelectModelCopyWithImpl<$Res>;
+      _$MultiSelectModelCopyWithImpl<$Res, MultiSelectModel>;
+  @useResult
   $Res call({bool isSelect, List<String> item});
 }
 
 /// @nodoc
-class _$MultiSelectModelCopyWithImpl<$Res>
+class _$MultiSelectModelCopyWithImpl<$Res, $Val extends MultiSelectModel>
     implements $MultiSelectModelCopyWith<$Res> {
   _$MultiSelectModelCopyWithImpl(this._value, this._then);
 
-  final MultiSelectModel _value;
   // ignore: unused_field
-  final $Res Function(MultiSelectModel) _then;
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
 
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? isSelect = freezed,
-    Object? item = freezed,
+    Object? isSelect = null,
+    Object? item = null,
   }) {
     return _then(_value.copyWith(
-      isSelect: isSelect == freezed
+      isSelect: null == isSelect
           ? _value.isSelect
           : isSelect // ignore: cast_nullable_to_non_nullable
               as bool,
-      item: item == freezed
+      item: null == item
           ? _value.item
           : item // ignore: cast_nullable_to_non_nullable
               as List<String>,
-    ));
+    ) as $Val);
   }
 }
 
@@ -66,31 +69,30 @@ abstract class _$$_MultiSelectModelCopyWith<$Res>
           _$_MultiSelectModel value, $Res Function(_$_MultiSelectModel) then) =
       __$$_MultiSelectModelCopyWithImpl<$Res>;
   @override
+  @useResult
   $Res call({bool isSelect, List<String> item});
 }
 
 /// @nodoc
 class __$$_MultiSelectModelCopyWithImpl<$Res>
-    extends _$MultiSelectModelCopyWithImpl<$Res>
+    extends _$MultiSelectModelCopyWithImpl<$Res, _$_MultiSelectModel>
     implements _$$_MultiSelectModelCopyWith<$Res> {
   __$$_MultiSelectModelCopyWithImpl(
       _$_MultiSelectModel _value, $Res Function(_$_MultiSelectModel) _then)
-      : super(_value, (v) => _then(v as _$_MultiSelectModel));
+      : super(_value, _then);
 
-  @override
-  _$_MultiSelectModel get _value => super._value as _$_MultiSelectModel;
-
+  @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? isSelect = freezed,
-    Object? item = freezed,
+    Object? isSelect = null,
+    Object? item = null,
   }) {
     return _then(_$_MultiSelectModel(
-      isSelect: isSelect == freezed
+      isSelect: null == isSelect
           ? _value.isSelect
           : isSelect // ignore: cast_nullable_to_non_nullable
               as bool,
-      item: item == freezed
+      item: null == item
           ? _value._item
           : item // ignore: cast_nullable_to_non_nullable
               as List<String>,
@@ -126,18 +128,18 @@ class _$_MultiSelectModel implements _MultiSelectModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_MultiSelectModel &&
-            const DeepCollectionEquality().equals(other.isSelect, isSelect) &&
+            (identical(other.isSelect, isSelect) ||
+                other.isSelect == isSelect) &&
             const DeepCollectionEquality().equals(other._item, _item));
   }
 
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(isSelect),
-      const DeepCollectionEquality().hash(_item));
+      runtimeType, isSelect, const DeepCollectionEquality().hash(_item));
 
   @JsonKey(ignore: true)
   @override
+  @pragma('vm:prefer-inline')
   _$$_MultiSelectModelCopyWith<_$_MultiSelectModel> get copyWith =>
       __$$_MultiSelectModelCopyWithImpl<_$_MultiSelectModel>(this, _$identity);
 }

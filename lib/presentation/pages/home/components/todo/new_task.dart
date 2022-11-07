@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:todolist/constant.dart';
 import 'package:todolist/data/db/app_database.dart';
-import 'package:todolist/domain/models/add_new_task_model.dart';
-import 'package:todolist/presentation/providers/add_new_task_provider.dart';
-import 'package:todolist/presentation/providers/task_list_navigation_provider.dart';
+import 'package:todolist/domain/models/new_task_model.dart';
+import 'package:todolist/presentation/providers/new_task_provider.dart';
+import 'package:todolist/presentation/providers/task_list_provider.dart';
 
-class AddNewTask extends ConsumerStatefulWidget {
-  const AddNewTask({super.key});
+class NewTask extends ConsumerStatefulWidget {
+  const NewTask({super.key});
 
   @override
-  ConsumerState<AddNewTask> createState() => _AddNewTaskState();
+  ConsumerState<NewTask> createState() => _NewTaskState();
 }
 
-class _AddNewTaskState extends ConsumerState<AddNewTask> {
+class _NewTaskState extends ConsumerState<NewTask> {
   final _titleController = TextEditingController();
 
   @override
@@ -29,8 +29,8 @@ class _AddNewTaskState extends ConsumerState<AddNewTask> {
 
   @override
   Widget build(BuildContext context) {
-    final taskLists = ref.watch(taskListsProvider);
-    final list = ref.watch(addNewTaskProvider.select((value) => value.list));
+    final taskLists = ref.watch(taskListsStreamProvider);
+    final list = ref.watch(newTaskProvider.select((value) => value.listId));
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -54,12 +54,10 @@ class _AddNewTaskState extends ConsumerState<AddNewTask> {
                 autofocus: true,
                 autocorrect: false,
                 onChanged: (value) {
-                  ref.read(addNewTaskProvider.notifier).changeTitle(value);
+                  ref.read(newTaskProvider.notifier).changeTitle(value);
                 },
                 onSubmitted: (value) {
-                  ref
-                      .read(addNewTaskProvider.notifier)
-                      .addTask(_titleController);
+                  ref.read(newTaskProvider.notifier).addTask(_titleController);
                 },
                 onEditingComplete: () {
                   FocusScope.of(context).requestFocus();
@@ -68,17 +66,17 @@ class _AddNewTaskState extends ConsumerState<AddNewTask> {
             ),
             IconButton(
               onPressed: () {
-                ref.read(addNewTaskProvider.notifier).addTask(_titleController);
+                ref.read(newTaskProvider.notifier).addTask(_titleController);
               },
               icon: const Icon(Icons.send),
             )
           ],
         ),
         taskLists.when(
-          data: (value) => DropdownButton<TaskList>(
+          data: (value) => DropdownButton<String>(
             items: [
               DropdownMenuItem(
-                value: inbox,
+                value: inbox.id,
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: Text(inbox.title),
@@ -86,7 +84,7 @@ class _AddNewTaskState extends ConsumerState<AddNewTask> {
               ),
               for (TaskList taskList in value)
                 DropdownMenuItem(
-                  value: taskList,
+                  value: taskList.id,
                   child: Container(
                     margin: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: Text(taskList.title),
@@ -95,7 +93,7 @@ class _AddNewTaskState extends ConsumerState<AddNewTask> {
             ],
             value: list,
             onChanged: (value) {
-              ref.read(addNewTaskProvider.notifier).changeList(value ?? inbox);
+              ref.read(newTaskProvider.notifier).changeList(value ?? inbox.id);
             },
             isExpanded: true,
           ),
@@ -124,19 +122,19 @@ class _AddNewTaskState extends ConsumerState<AddNewTask> {
               IconButton(
                 tooltip: "deadline",
                 onPressed: () async {
-                  final now = DateTime.now();
-                  final date = await showDatePicker(
-                    context: context,
-                    initialDate: now,
-                    firstDate: DateTime(now.year - 100),
-                    lastDate: DateTime(now.year + 100),
-                  );
-                  final time = await showTimePicker(
-                    context: context,
-                    initialTime: TimeOfDay.fromDateTime(now),
-                  );
+                  // final now = DateTime.now();
+                  // final date = await showDatePicker(
+                  //   context: context,
+                  //   initialDate: now,
+                  //   firstDate: DateTime(now.year - 100),
+                  //   lastDate: DateTime(now.year + 100),
+                  // );
+                  // final time = await showTimePicker(
+                  //   context: context,
+                  //   initialTime: TimeOfDay.fromDateTime(now),
+                  // );
                   // ref
-                  //     .read(addNewTaskProvider.notifier)
+                  //     .read(newTaskProvider.notifier)
                   //     .changeDateTime(date, time);
                 },
                 icon: const Icon(Icons.calendar_month),
@@ -172,7 +170,7 @@ class PriorityDialog extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final priority = ref.watch(
-      addNewTaskProvider.select((value) => value.priority),
+      newTaskProvider.select((value) => value.priority),
     );
     return SimpleDialog(
       children: Priority.values.map((e) {
@@ -187,7 +185,7 @@ class PriorityDialog extends ConsumerWidget {
             borderRadius: BorderRadius.circular(15),
           ),
           onTap: () {
-            ref.read(addNewTaskProvider.notifier).changePriority(e);
+            ref.read(newTaskProvider.notifier).changePriority(e);
             Navigator.of(context).pop();
           },
           selected: priority == e,
@@ -215,7 +213,7 @@ class _SubTaskDialogState extends ConsumerState<SubTaskDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final subTask = ref.watch(addNewTaskProvider).subtask;
+    final subTask = ref.watch(newTaskProvider).subtask;
     return SimpleDialog(
       title: const Text("Subtask"),
       contentPadding: const EdgeInsets.fromLTRB(8.0, 12.0, 8.0, 16.0),
@@ -224,7 +222,7 @@ class _SubTaskDialogState extends ConsumerState<SubTaskDialog> {
           controller: _titleController,
           onSubmitted: (value) {
             ref
-                .read(addNewTaskProvider.notifier)
+                .read(newTaskProvider.notifier)
                 .addSubtask(_titleController.text);
             _titleController.clear();
           },
@@ -234,7 +232,7 @@ class _SubTaskDialogState extends ConsumerState<SubTaskDialog> {
             title: Text(subTask[i]),
             trailing: IconButton(
               onPressed: () {
-                ref.read(addNewTaskProvider.notifier).removeSubtask(i);
+                ref.read(newTaskProvider.notifier).removeSubtask(i);
               },
               icon: const Icon(Icons.delete),
             ),

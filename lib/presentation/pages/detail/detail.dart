@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:todolist/data/db/app_database.dart';
 
 class Detail extends StatelessWidget {
   const Detail({super.key, required this.taskId});

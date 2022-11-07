@@ -1,47 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:todolist/constant.dart';
-import 'package:todolist/presentation/pages/detail/detail.dart';
-import 'package:todolist/presentation/pages/home/home.dart';
+import 'package:todolist/presentation/providers/router_provider.dart';
 import 'package:todolist/presentation/providers/theme_provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class App extends ConsumerWidget {
-  App({super.key});
-
-  final _router = GoRouter(
-    routes: [
-      GoRoute(
-        name: "home",
-        path: "/",
-        pageBuilder: (context, state) {
-          return MaterialPage<void>(
-            key: state.pageKey,
-            child: Home(),
-          );
-        },
-      ),
-      GoRoute(
-        name: "detail",
-        path: "/detail/:id",
-        pageBuilder: (context, state) {
-          String taskId = state.params["id"] ?? inbox.id;
-          return MaterialPage<void>(
-            key: state.pageKey,
-            child: Detail(
-              taskId: taskId,
-            ),
-          );
-        },
-      ),
-    ],
-  );
+  const App({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeProvider);
+    final router = ref.watch(routerProvider);
     return MaterialApp.router(
       title: 'todolist',
       supportedLocales: const [
@@ -101,9 +71,9 @@ class App extends ConsumerWidget {
           },
         ),
       ),
-      routerDelegate: _router.routerDelegate,
-      routeInformationParser: _router.routeInformationParser,
-      routeInformationProvider: _router.routeInformationProvider,
+      routerDelegate: router.routerDelegate,
+      routeInformationParser: router.routeInformationParser,
+      routeInformationProvider: router.routeInformationProvider,
     );
   }
 }

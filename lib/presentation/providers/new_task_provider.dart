@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:todolist/data/db/app_database.dart';
 import 'package:todolist/data/repositories/task_repository_impl.dart';
-import 'package:todolist/domain/models/add_new_task_model.dart';
+import 'package:todolist/domain/models/new_task_model.dart';
 import 'package:todolist/presentation/providers/task_list_navigation_provider.dart';
 
-class AddNewTaskProvider extends StateNotifier<AddNewTaskModel> {
-  AddNewTaskProvider(TaskList taskList)
-      : super(AddNewTaskModel(list: taskList));
+class NewTaskProvider extends StateNotifier<NewTaskModel> {
+  NewTaskProvider(String listId) : super(NewTaskModel(listId: listId));
 
   final _taskRepository = TaskRepositoryImpl();
 
@@ -25,8 +23,8 @@ class AddNewTaskProvider extends StateNotifier<AddNewTaskModel> {
     state = state.copyWith(title: title);
   }
 
-  void changeList(TaskList list) {
-    state = state.copyWith(list: list);
+  void changeList(String listId) {
+    state = state.copyWith(listId: listId);
   }
 
   void changePriority(Priority priority) {
@@ -42,9 +40,8 @@ class AddNewTaskProvider extends StateNotifier<AddNewTaskModel> {
   }
 }
 
-final addNewTaskProvider =
-    StateNotifierProvider.autoDispose<AddNewTaskProvider, AddNewTaskModel>(
-        (ref) {
+final newTaskProvider =
+    StateNotifierProvider.autoDispose<NewTaskProvider, NewTaskModel>((ref) {
   final taskList = ref.watch(taskListNavigationProvider);
-  return AddNewTaskProvider(taskList);
+  return NewTaskProvider(taskList.id);
 });
