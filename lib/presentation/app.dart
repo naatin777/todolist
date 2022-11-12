@@ -13,7 +13,7 @@ class App extends ConsumerWidget {
     final themeMode = ref.watch(themeProvider);
     final router = ref.watch(routerProvider);
     return MaterialApp.router(
-      title: 'todolist',
+      title: 'Todolist',
       supportedLocales: const [
         Locale('en', ''),
         Locale('ja', ''),
