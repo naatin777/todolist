@@ -5,7 +5,7 @@ abstract class TaskListRepository {
   Future<TaskList> getTaskList(String id);
   Stream<List<TaskList>> watchAllTaskLists();
   Stream<TaskList> watchTaskList(String id);
-  Future<void> addTaskList(String title);
+  Future<void> addTaskList(TaskList taskList);
   Future<void> updateTaskList(TaskList taskList);
   Future<void> removeTaskList(String id);
 }

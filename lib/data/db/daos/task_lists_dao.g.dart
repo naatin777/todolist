@@ -2,10 +2,7 @@
 
 part of 'task_lists_dao.dart';
 
-// **************************************************************************
-// DaoGenerator
-// **************************************************************************
-
+// ignore_for_file: type=lint
 mixin _$TaskListsDaoMixin on DatabaseAccessor<AppDatabase> {
   $TaskListsTable get taskLists => attachedDatabase.taskLists;
 }

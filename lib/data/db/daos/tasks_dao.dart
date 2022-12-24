@@ -16,6 +16,14 @@ class TasksDao extends DatabaseAccessor<AppDatabase> with _$TasksDaoMixin {
     return (select(tasks)..where((tbl) => tbl.listId.equals(listId))).watch();
   }
 
+  Future<Task> selectFromId(String id) {
+    return (select(tasks)..where((tbl) => tbl.id.equals(id))).getSingle();
+  }
+
+  Stream<Task> watchFromId(String id) {
+    return (select(tasks)..where((tbl) => tbl.id.equals(id))).watchSingle();
+  }
+
   Future<int> insert(Task task) {
     return into(tasks).insert(task.toCompanion(true));
   }

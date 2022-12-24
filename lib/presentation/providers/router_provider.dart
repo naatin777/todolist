@@ -4,43 +4,50 @@ import 'package:go_router/go_router.dart';
 import 'package:todolist/constant.dart';
 import 'package:todolist/presentation/pages/detail/detail.dart';
 import 'package:todolist/presentation/pages/home/home.dart';
-import 'package:todolist/presentation/providers/task_list_navigation_provider.dart';
 
 final routerProvider = Provider((ref) {
-  final taskListId = ref.watch(taskListNavigationProvider);
   return GoRouter(
+    initialLocation: "/${NavigationItem.todo.name}",
     routes: [
       GoRoute(
-        path: "/",
-        redirect: (context, state) => "/todo?id=${taskListId.id}",
-      ),
-      GoRoute(
         name: "home",
-        path: "/:screen(${HomeScreen.values.map((e) => e.name).join('|')})",
+        path: "/:nav(${NavigationItem.values.map((e) => e.name).join('|')})",
         pageBuilder: (context, state) {
-          final screen = state.params["screen"] ?? HomeScreen.todo.name;
-          final homeScreen =
-              HomeScreen.values.where((e) => e.name == screen).first;
-          final taskListId = state.queryParams["id"] ?? inbox.id;
-          return MaterialPage<void>(
+          final nav = state.params["nav"] ?? NavigationItem.todo.name;
+          final listId = state.queryParams["listId"] ?? inbox.id;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ref.read(listIdProvider.notifier).state = listId;
+          });
+          return MaterialPage(
             key: state.pageKey,
-            child: Home(homeScreen: homeScreen, taskListId: taskListId),
+            child: Home(
+              navigationItem:
+                  NavigationItem.values.firstWhere((e) => e.name == nav),
+            ),
           );
         },
       ),
       GoRoute(
         name: "detail",
-        path: "/detail/:id",
+        path: "/detail/:taskId",
         pageBuilder: (context, state) {
-          String taskId = state.params["id"] ?? inbox.id;
-          return MaterialPage<void>(
+          final taskId = state.params["taskId"];
+          return MaterialPage(
             key: state.pageKey,
-            child: Detail(
-              taskId: taskId,
-            ),
+            child: Detail(taskId: taskId),
           );
         },
       ),
     ],
   );
 });
+
+final listIdProvider = StateProvider((ref) => inbox.id);
+
+String createHomeRoute(int index, String listId) {
+  return "/${NavigationItem.values[index].name}?listId=$listId";
+}
+
+String createDetailRoute(String taskId) {
+  return "/detail/$taskId";
+}

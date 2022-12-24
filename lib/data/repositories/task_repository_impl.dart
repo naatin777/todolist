@@ -1,11 +1,8 @@
 import 'package:todolist/data/db/app_database.dart';
-import 'package:todolist/domain/models/new_task_model.dart';
 import 'package:todolist/domain/repositories/task_repository.dart';
-import 'package:uuid/uuid.dart';
 
 class TaskRepositoryImpl extends TaskRepository {
   final _tasksDao = AppDatabase.getInstance().tasksDao;
-  final _uuid = const Uuid();
 
   @override
   Future<List<Task>> getTasks(String listId) async {
@@ -18,21 +15,18 @@ class TaskRepositoryImpl extends TaskRepository {
   }
 
   @override
-  Future<void> addTask(NewTaskModel newTaskModel) async {
-    await _tasksDao.insert(
-      Task(
-        id: _uuid.v4(),
-        listId: newTaskModel.listId,
-        title: newTaskModel.title,
-        check: false,
-        priority: newTaskModel.priority.index,
-        deadline: newTaskModel.deadline,
-        subtask: newTaskModel.subtask.isNotEmpty
-            ? newTaskModel.subtask.join(",")
-            : "",
-        description: newTaskModel.description,
-      ),
-    );
+  Future<Task> getTasksFromId(String id) async {
+    return await _tasksDao.selectFromId(id);
+  }
+
+  @override
+  Stream<Task> watchTasksFromId(String id) {
+    return _tasksDao.watchFromId(id);
+  }
+
+  @override
+  Future<void> addTask(Task task) async {
+    await _tasksDao.insert(task);
   }
 
   @override

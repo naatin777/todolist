@@ -1,11 +1,9 @@
 import 'package:todolist/constant.dart';
 import 'package:todolist/data/db/app_database.dart';
 import 'package:todolist/domain/repositories/task_list_repository.dart';
-import 'package:uuid/uuid.dart';
 
 class TaskListRepositoryImpl extends TaskListRepository {
   final _taskListsDao = AppDatabase.getInstance().taskListsDao;
-  final _uuid = const Uuid();
 
   @override
   Future<List<TaskList>> getAllTaskLists() async {
@@ -36,8 +34,7 @@ class TaskListRepositoryImpl extends TaskListRepository {
   }
 
   @override
-  Future<void> addTaskList(String title) async {
-    final taskList = TaskList(id: _uuid.v4(), title: title);
+  Future<void> addTaskList(TaskList taskList) async {
     await _taskListsDao.insertTaskList(taskList);
   }
 

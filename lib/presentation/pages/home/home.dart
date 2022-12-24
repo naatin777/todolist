@@ -1,91 +1,87 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:todolist/presentation/pages/home/components/analytics/analytics_body.dart';
-import 'package:todolist/presentation/pages/home/components/search/search_body.dart';
-import 'package:todolist/presentation/pages/home/components/settings/settings_body.dart';
-import 'package:todolist/presentation/pages/home/components/todo/todo_body.dart';
-import 'package:todolist/presentation/pages/home/components/todo/todo_fab.dart';
-import 'package:todolist/presentation/pages/home/components/todo/todo_drawer.dart';
-import 'package:todolist/presentation/providers/multi_select_provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:todolist/presentation/pages/home/components/add_new_task_fab.dart';
+import 'package:todolist/presentation/pages/home/components/task_list_drawer.dart';
+import 'package:todolist/presentation/pages/home/screens/todo_screen.dart';
+import 'package:todolist/presentation/providers/router_provider.dart';
 
-class Home extends ConsumerStatefulWidget {
-  const Home({
-    Key? key,
-    required this.homeScreen,
-    required this.taskListId,
-  }) : super(key: key);
-  final HomeScreen homeScreen;
-  final String taskListId;
+class Home extends ConsumerWidget {
+  const Home({super.key, required this.navigationItem});
+
+  final NavigationItem navigationItem;
 
   @override
-  ConsumerState<Home> createState() => _HomeState();
-}
-
-class _HomeState extends ConsumerState<Home> {
-  late String taskListId = widget.taskListId;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final appLocalizations = AppLocalizations.of(context);
-    final multiSelect = ref.watch(multiSelectProvider);
-    final homeScreen = widget.homeScreen;
-
-    taskListId = widget.taskListId;
-    return WillPopScope(
-      child: Scaffold(
-        drawer: homeScreen.drawer,
-        body: homeScreen.body(taskListId),
-        floatingActionButton:
-            multiSelect.isSelect ? null : homeScreen.floatingActionButton,
-        bottomNavigationBar: NavigationBar(
-          selectedIndex: homeScreen.index,
-          onDestinationSelected: (int index) {
-            GoRouter.of(context).go(
-                "/${HomeScreen.values[index].name}?id=${widget.taskListId}");
-          },
-          destinations: HomeScreen.values
-              .map((e) => e.destination(appLocalizations))
-              .toList(),
-        ),
+    final isLarge = MediaQuery.of(context).size.width >= 640.0;
+    final listId = ref.watch(listIdProvider);
+    return Scaffold(
+      drawer: navigationItem.drawer,
+      body: Row(
+        children: [
+          if (isLarge)
+            SafeArea(
+              child: NavigationRail(
+                selectedIndex: navigationItem.index,
+                onDestinationSelected: (int index) {
+                  GoRouter.of(context).go(createHomeRoute(index, listId));
+                },
+                destinations: NavigationItem.values
+                    .map((e) => e.railDestination(appLocalizations))
+                    .toList(),
+                labelType: NavigationRailLabelType.all,
+              ),
+            ),
+          Expanded(
+            child: navigationItem.screen,
+          ),
+        ],
       ),
-      onWillPop: () async {
-        return ref.read(multiSelectProvider.notifier).willPop();
-      },
+      floatingActionButton: navigationItem.fab,
+      bottomNavigationBar: isLarge
+          ? null
+          : NavigationBar(
+              selectedIndex: navigationItem.index,
+              onDestinationSelected: (int index) {
+                GoRouter.of(context).go(createHomeRoute(index, listId));
+              },
+              destinations: NavigationItem.values
+                  .map((e) => e.destination(appLocalizations))
+                  .toList(),
+            ),
     );
   }
 }
 
-enum HomeScreen {
-  todo,
-  search,
-  analytics,
-  settings,
-}
+enum NavigationItem {
+  todo(fab: AddNewTaskFab(), screen: TodoScreen(), drawer: TaskListDrawer()),
+  search(fab: null, screen: TodoScreen(), drawer: null),
+  analytics(fab: null, screen: TodoScreen(), drawer: null),
+  settings(fab: null, screen: TodoScreen(), drawer: null);
 
-extension on HomeScreen {
   NavigationDestination destination(AppLocalizations? appLocalizations) {
     switch (this) {
-      case HomeScreen.todo:
+      case NavigationItem.todo:
         return NavigationDestination(
           icon: const Icon(Icons.check),
           selectedIcon: const Icon(Icons.check_outlined),
           label: appLocalizations!.todo,
         );
-      case HomeScreen.search:
+      case NavigationItem.search:
         return NavigationDestination(
           icon: const Icon(Icons.search),
           selectedIcon: const Icon(Icons.search_outlined),
           label: appLocalizations!.search,
         );
-      case HomeScreen.analytics:
+      case NavigationItem.analytics:
         return NavigationDestination(
           icon: const Icon(Icons.analytics),
           selectedIcon: const Icon(Icons.analytics_outlined),
           label: appLocalizations!.analytics,
         );
-      case HomeScreen.settings:
+      case NavigationItem.settings:
         return NavigationDestination(
           icon: const Icon(Icons.settings),
           selectedIcon: const Icon(Icons.settings_outlined),
@@ -97,25 +93,25 @@ extension on HomeScreen {
   NavigationRailDestination railDestination(
       AppLocalizations? appLocalizations) {
     switch (this) {
-      case HomeScreen.todo:
+      case NavigationItem.todo:
         return NavigationRailDestination(
           icon: const Icon(Icons.check),
           selectedIcon: const Icon(Icons.check_outlined),
           label: Text(appLocalizations!.todo),
         );
-      case HomeScreen.search:
+      case NavigationItem.search:
         return NavigationRailDestination(
           icon: const Icon(Icons.search),
           selectedIcon: const Icon(Icons.search_outlined),
           label: Text(appLocalizations!.search),
         );
-      case HomeScreen.analytics:
+      case NavigationItem.analytics:
         return NavigationRailDestination(
           icon: const Icon(Icons.analytics),
           selectedIcon: const Icon(Icons.analytics_outlined),
           label: Text(appLocalizations!.analytics),
         );
-      case HomeScreen.settings:
+      case NavigationItem.settings:
         return NavigationRailDestination(
           icon: const Icon(Icons.settings),
           selectedIcon: const Icon(Icons.settings_outlined),
@@ -124,34 +120,13 @@ extension on HomeScreen {
     }
   }
 
-  Widget body(String listId) {
-    switch (this) {
-      case HomeScreen.todo:
-        return TodoBody(listId: listId);
-      case HomeScreen.search:
-        return const SearchBody();
-      case HomeScreen.analytics:
-        return const AnalyticsBody();
-      case HomeScreen.settings:
-        return const SettingsBody();
-    }
-  }
+  final Widget? fab;
+  final Widget screen;
+  final Widget? drawer;
 
-  Widget? get drawer {
-    switch (this) {
-      case HomeScreen.todo:
-        return const TodoDrawer();
-      default:
-        return null;
-    }
-  }
-
-  Widget? get floatingActionButton {
-    switch (this) {
-      case HomeScreen.todo:
-        return const TodoFab();
-      default:
-        return null;
-    }
-  }
+  const NavigationItem({
+    required this.fab,
+    required this.screen,
+    required this.drawer,
+  });
 }
